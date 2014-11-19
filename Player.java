@@ -2,8 +2,9 @@ import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.Color;
-public class Player extends Entity
+public class Player
 {
+  Rectangle box = new Rectangle(605,605,64,64);
   private boolean up;
   private boolean down;
   private boolean left;
@@ -17,106 +18,50 @@ public class Player extends Entity
   private int heldx;
   private int heldy;
   
-  public Player()
-  {
-    box = new Rectangle(512,512,64,64);
-    eat = false;
-  }
-  
   public void move()
   {
-    Crossing.entityGrid[box.x/64][box.y/64].remove(this);
     if (up)
     {
       if (right)
       {
-        box.x=box.x+4;
-        if (Crossing.checkColide(box))
-        {
-          box.x=box.x-4;
-        }
-        box.y=box.y-4;
-        if (Crossing.checkColide(box))
-        {
-          box.y=box.y+4;
-        }
+        box.x=box.x+40;
+        box.y=box.y-40;
       }
       else if (left)
       {
-        box.x=box.x-4;
-        if (Crossing.checkColide(box))
-        {
-          box.x=box.x+4;
-        }
-        box.y=box.y-4;
-        if (Crossing.checkColide(box))
-        {
-          box.y=box.y+4;
-        }
+        box.x=box.x-40;
+        box.y=box.y-40;
       }
       else
       {
-        box.y=box.y-6;
-        if (Crossing.checkColide(box))
-        {
-          box.y=box.y+6;
-        }
+        box.y=box.y-60;
       }
     }
     else if (down)
     {
       if (right)
       {
-        box.x=box.x+4;
-        if (Crossing.checkColide(box))
-        {
-          box.x=box.x-4;
-        }
-        box.y=box.y+4;
-        if (Crossing.checkColide(box))
-        {
-          box.y=box.y-4;
-        }
+        box.x=box.x+40;
+        box.y=box.y+40;
       }
       else if (left)
       {
-        box.x=box.x-4;
-        if (Crossing.checkColide(box))
-        {
-          box.x=box.x+4;
-        }
-        box.y=box.y+4;
-        if (Crossing.checkColide(box))
-        {
-          box.y=box.y-4;
-        }
+        box.x=box.x-40;
+        box.y=box.y+40;
       }
       else
       {
-        box.y=box.y+6;
-        if (Crossing.checkColide(box))
-        {
-          box.y=box.y-6;
-        }
+        box.y=box.y+60;
       }
     }
     else if (left)
     {
-      box.x=box.x-6;
-      if (Crossing.checkColide(box))
-      {
-        box.x=box.x+6;
-      }
+      box.x=box.x-60;
     }
     else if (right)
     {
-      box.x=box.x+6;
-      if (Crossing.checkColide(box))
-      {
-        box.x=box.x-6;
-      }
+      box.x=box.x+60;
     }
-    Crossing.entityGrid[box.x/64][box.y/64].add(this);
   }
   
   public void input(String s)
@@ -189,11 +134,8 @@ public class Player extends Entity
             {
               for (int b=-1; b<2; b++)
               {
-                for (int c=0; c<Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].size(); c++)
-                {
-                  if (Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].get(c) instanceof Holes)
-                    bury=true;
-                }
+                if (Crossing.holes[box.x/64+a][box.y/64+b])
+                  bury=true;
               }
             }
           }
@@ -203,11 +145,8 @@ public class Player extends Entity
             {
               for (int b=-1; b<2; b++)
               {
-                for (int c=0; c<Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].size(); c++)
-                {
-                  if (Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].get(c) instanceof Holes)
-                    bury=true;
-                }
+                if (Crossing.holes[box.x/64+a][box.y/64+b+1])
+                  bury=true;
               }
             }
           }
@@ -218,11 +157,8 @@ public class Player extends Entity
           {
             for (int b=-1; b<2; b++)
             {
-              for (int c=0; c<Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].size(); c++)
-              {
-                if (Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].get(c) instanceof Holes)
-                  bury=true;
-              }
+              if (Crossing.holes[box.x/64+a+1][box.y/64+b])
+                bury=true;
             }
           }
         }
@@ -232,11 +168,8 @@ public class Player extends Entity
           {
             for (int b=-1; b<2; b++)
             {
-              for (int c=0; c<Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].size(); c++)
-              {
-                if (Crossing.entityGrid[(int)(box.x/64+a)][(int)(box.y/64+b)].get(c) instanceof Holes)
-                  bury=true;
-              }
+              if (Crossing.holes[box.x/64+a+1][box.y/64+b+1])
+                bury=true;
             }
           }
         }

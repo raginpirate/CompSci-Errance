@@ -3,7 +3,7 @@ import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-//Extends the class Entity to make sure it can fit inside the entityGrid, and has all of Entity's fields
+import java.awt.Rectangle;
 public class Bugs extends Entity
 {
   private double angle=2;
@@ -14,43 +14,32 @@ public class Bugs extends Entity
   private BufferedImage ani1;
   private BufferedImage ani2;
   private BufferedImage ani3;
+  private int boundary;
   
-  public Bugs(String s, int a, int b)
+  public Bugs(String s, int a, int b, int boundary)
   {
-    //Upon creation all bugs are edible (used for the inventory)
     eat=true;
-    //Sets the checkfail to be true
     boolean checkFail=true;
-    //Buffers all the required images that this specific bug needs based off s
     image = Graphix.buffer(s + ".jpg");
     ani1 = Graphix.buffer(s + 1 + ".jpg");
     ani2 = Graphix.buffer(s + 2 + ".jpg");
     ani3 = Graphix.buffer(s + 3 + ".jpg");
-    //It then places it's box at the supplied a b grid location
+    this.boundary = boundary;
     box.x=a*64;
     box.y=b*64;
   }
   
-  //Runs durring worldUpdate
   public void move()
   {
-    //First it removes itself from the entityGrid so it does not collide with itself
-    Crossing.entityGrid[(int)(box.x/64)][(int)(box.y/64)].remove(this);
-    //It then increments a counter which is used to help make sure the bug's current mathematical function is at the next coordinate
+    Crossing.bugs[box.x/64][box.y/64].remove(this);
     count++;
-    //The mathematical function for a sin function rotated by angle "angle" around the orgin for x and y based on count
     box.y= box.y+(int)((count)*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
     box.x= box.x+(int)((count)*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-    //Then, we make sure our new position does not overlap anything else and maxLoop hasnt reached zero
-    //(maxLoops is used to make sure the bug regularly changes direction, even if it doesnt collide with anything)
-    if (maxLoops==0|| Crossing.checkColide(box))
+    if (maxLoops==0 || collision())
     {
-      //If maxLoops is at 0 or we are overlapping with something we will reverse our function
       box.y= box.y-(int)((count)*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
       box.x= box.x-(int)((count)*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-      //and then place our bug back onto the entityGrid at the correct location
-      Crossing.entityGrid[box.x/64][box.y/64].add(this);
-      //we then randomly generate a new maxLoops, angle, and set our mathematical function count to 0
+      Crossing.bugs[box.x/64][box.y/64].add(this);
       maxLoops=(int)(Math.random()*40);
       angle = angle+Math.PI/4+Math.random()*(Math.PI/2);
       count=0;
@@ -58,9 +47,7 @@ public class Bugs extends Entity
     }
     else
     {
-      //If our new box location passed all checks, then we add it back to the entityGrid at the right location 
-      //and decrease maxLoops by one
-      Crossing.entityGrid[box.x/64][box.y/64].add(this);
+      Crossing.bugs[box.x/64][box.y/64].add(this);
       maxLoops--;
       if (animation==2)
         aniAdd=-1;
@@ -70,10 +57,20 @@ public class Bugs extends Entity
     }
   }
   
-  //The classes paint method
+  public boolean collision()
+  {
+    if (!(Crossing.npcBoundaries[boundary].intersects(box)) || Crossing.holes[box.x/64][box.y/64] ||  Crossing.holes[box.x/64+1][box.y/64] || Crossing.holes[box.x/64][box.y/64+1] || Crossing.holes[box.x/64+1][box.y/64+1])
+      return true;
+    for (Rectangle x:Crossing.worldWalls)
+    {
+      if (x.intersects(box))
+        return true;
+    }
+    return false;
+  }
+  
   public void paint(Graphics g)
   {
-    //It simply looks at what stage in the animation cycle it is in and draws the appropriate image rotated by angle "amgle"
     Graphics2D g2d = (Graphics2D) g;
     AffineTransform rotate = AffineTransform.getRotateInstance(angle+Math.PI/2, image.getWidth()/2, image.getHeight()/2);
     AffineTransformOp translate = new AffineTransformOp(rotate, AffineTransformOp.TYPE_BILINEAR);

@@ -171,13 +171,24 @@ public class Graphix extends JPanel
     Graphics2D g2d = (Graphics2D) g;
     super.paintComponent(g);
     g2d.drawImage(back, (int)(Crossing.PLAYERLOCATION-Crossing.player.box.x), (int)(Crossing.PLAYERLOCATION-Crossing.player.box.y), this);
-    g2d.setColor(Color.black);
+    g2d.setColor(Color.orange);
+    g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
     for (int a=-8; a<8; a++)
     {
       for (int b=-8; b<8; b++)
       {
-        for (int x=0; x<Crossing.entityGrid[(int)(Crossing.player.box.x/64+a)][(int)(Crossing.player.box.y/64+b)].size(); x++)
-          Crossing.entityGrid[(int)(Crossing.player.box.x/64+a)][(int)(Crossing.player.box.y/64+b)].get(x).paint(g);
+        if (Crossing.holes[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b])
+          g2d.drawImage(wall, (int)(Crossing.player.box.x/64+a)*64-Crossing.player.box.x+Crossing.PLAYERLOCATION, (int)(Crossing.player.box.y/64+b)*64-Crossing.player.box.y+Crossing.PLAYERLOCATION, this);
+        for (int x=0; x<Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+          Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        for (int x=0; x<Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+          Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        for (int x=0; x<Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+          Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        for (int x=0; x<Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+          Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        for (int x=0; x<Crossing.plants[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+          Crossing.plants[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
       }
     }
     if (Crossing.player.menu>0)
