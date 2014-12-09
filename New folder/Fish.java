@@ -18,17 +18,17 @@ public class Fish extends Entity
   private BufferedImage ani4;
   private BufferedImage ani5;
   private int boundary;
+  private boolean collided=false;
   
   public Fish(String s, int a, int b, int boundary)
   {
     eat=true;
-    boolean checkFail=true;
-    image = Graphix.buffer(s);
-    ani1 = Graphix.buffer(s + 1);
-    ani2 = Graphix.buffer(s + 2);
-    ani3 = Graphix.buffer(s + 3);
-    ani4 = Graphix.buffer(s + 4);
-    ani5 = Graphix.buffer(s + 5);
+    image = Graphix.buffer(s + ".jpg");
+    ani1 = Graphix.buffer(s + 1 + ".jpg");
+    ani2 = Graphix.buffer(s + 2 + ".jpg");
+    ani3 = Graphix.buffer(s + 3 + ".jpg");
+    ani4 = Graphix.buffer(s + 4 + ".jpg");
+    ani5 = Graphix.buffer(s + 5 + ".jpg");
     box.x=64*a;
     box.y=64*b;
     this.boundary=boundary;
@@ -37,15 +37,31 @@ public class Fish extends Entity
   public void move()
   {
     if (waitCount>0)
-      waitCount--;
-    if (waitCount==0)
     {
-      angle = Math.random()*Math.PI*2;
+      waitCount--;
+      if (animation==4)
+        aniAdd=-1;
+      else if (animation==0)
+        aniAdd=1;
+      animation=animation+aniAdd;
+    }
+    else if (waitCount==0)
+    {
+      if (collided)
+      {
+        angle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
+        if (angle<0)
+          angle = angle+Math.PI*2;
+        collided=false;
+      }
+      else
+        angle = Math.random()*Math.PI*2;
       rotation = Math.PI*2 - angle;
       if (rotation>=Math.PI)
         rotation = rotation-Math.PI*2;
       accelleration = 20;
       waitCount--;
+      animation=2;
     }
     else
     {
@@ -54,6 +70,7 @@ public class Fish extends Entity
       box.y= (int)(box.y+accelleration*Math.sin(angle));
       if (collision())
       {
+        collided=true;
         box.x= (int)(box.x-accelleration*Math.cos(angle));
         box.y= (int)(box.y-accelleration*Math.sin(angle));
         Crossing.fish[box.x/64][box.y/64].add(this);
@@ -72,13 +89,23 @@ public class Fish extends Entity
         if (Math.random()<0.01 && accelleration>0)
           accelleration=(short)(accelleration+10);
         if (accelleration<10)
+        {
           angle = angle+rotation/16;
+          if (animation==4)
+            aniAdd=-1;
+          else if (animation==0)
+            aniAdd=1;
+          animation=animation+aniAdd;
+        }
+        else
+        {
+          if (animation==3)
+            aniAdd=-1;
+          else if (animation==1)
+            aniAdd=1;
+          animation=animation+aniAdd;
+        }
       }
-      if (animation==4)
-        aniAdd=-1;
-      else if (animation==0)
-        aniAdd=1;
-      animation=animation+aniAdd;
     }
   }
   

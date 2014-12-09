@@ -26,7 +26,6 @@ public class Villagers extends Entity
   public Villagers(String s, int a, int b)
   {
     eat=true;
-    boolean checkFail=true;
     image = Graphix.buffer(s + ".jpg");
     ani1 = Graphix.buffer(s + 1 + ".jpg");
     ani2 = Graphix.buffer(s + 2 + ".jpg");

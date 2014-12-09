@@ -12,6 +12,7 @@ public class Crossing
   static final int PLAYERLOCATION=368;
   static JFrame frame = new JFrame("Crossing v0.2");
   static ArrayList<Bugs>[][] bugs = new ArrayList[60][40];
+  static ArrayList<HoppingBugs>[][] hoppingBugs = new ArrayList[60][40];
   static ArrayList<FlyingBugs>[][] flyingBugs = new ArrayList[60][40];
   static ArrayList<Fish>[][] fish = new ArrayList[60][40];
   static ArrayList<Villagers>[][] villagers = new ArrayList[60][40];
@@ -28,7 +29,7 @@ public class Crossing
     fillArray();
     frame();
     inventory[3][2]=new Fish("fish", 9, 9, 0);
-    fish[12][12].add(new Fish("fish", 12, 12, 0));
+    flyingBugs[12][12].add(new FlyingBugs("bug", 12, 12, 0));
     worldUpdate();
   }
   
@@ -39,6 +40,7 @@ public class Crossing
       for (int b=0; b<40; b++)
       {
         bugs[a][b] = new ArrayList<Bugs>();
+        hoppingBugs[a][b] = new ArrayList<HoppingBugs>();
         flyingBugs[a][b] = new ArrayList<FlyingBugs>();
         fish[a][b] = new ArrayList<Fish>();
         villagers[a][b] = new ArrayList<Villagers>();
@@ -49,8 +51,8 @@ public class Crossing
         }
       }
     }
-    npcBoundaries[0]=new Rectangle(0,0,1000, 1000);
-    worldWalls[0]=new Rectangle(512,512,1000, 1000);
+    npcBoundaries[0]=new Rectangle(512,512,1000, 1000);
+    worldWalls[0]=new Rectangle(1000,1000,1000, 1000);
   }
   
   public static void frame()

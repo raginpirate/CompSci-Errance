@@ -177,7 +177,8 @@ public class Player
       System.out.println(bury);
     }
     if (s=="w")
-      System.out.println("Run function hotkey(w)");
+      System.out.println(box.x + " " + box.y);
+      //System.out.println("Run function hotkey(w)");
     if (s=="e")
       System.out.println("Run function hotkey(e)");
     if (s=="r")
