@@ -77,25 +77,12 @@ public class Villagers extends Entity
   
   public boolean collision()
   {
-    if (box.intersects(Crossing.player.box))
-      return true;
     if (Crossing.grid[box.x/64][box.y/64] instanceof Hole||  Crossing.grid[box.x/64+1][box.y/64] instanceof Hole|| Crossing.grid[box.x/64][box.y/64+1] instanceof Hole|| Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
       return true;
     for (Rectangle x:Crossing.worldWalls)
     {
       if (x.intersects(box))
         return true;
-    }
-    for (int a=-1; a<2; a++)
-    {
-      for (int b=-1; b<2; b++)
-      {
-        for (int d=0; d<Crossing.villagers[box.x/64+a][box.y/64+b].size(); d++)
-        {
-          if (Crossing.villagers[box.x/64+a][box.y/64+b].get(d).box.intersects(box) && Crossing.villagers[box.x/64+a][box.y/64+b].get(d) != this)
-            return true;
-        }
-      }
     }
     return false;
   }

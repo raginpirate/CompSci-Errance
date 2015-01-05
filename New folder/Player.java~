@@ -9,7 +9,6 @@ public class Player
   private boolean down;
   private boolean left;
   private boolean right;
-  //Rectangle temp = new Rectangle(0,0,0,0);
   private int lastDirection=0; // 0 up 1 down 2 left 3 right
   int selected1x;
   int selected1y;
@@ -28,26 +27,16 @@ public class Player
       if (right)
       {
         box.x=box.x+4;
-        if (!(worldCollision(box, true)))
-          box.x=box.x-4;
         box.y=box.y-4;
-        if (!(worldCollision(box, true)))
-          box.y=box.y+4;
       }
       else if (left)
       {
         box.x=box.x-4;
-        if (!(worldCollision(box, true)))
-          box.x=box.x+4;
         box.y=box.y-4;
-        if (!(worldCollision(box, true)))
-          box.y=box.y+4;
       }
       else
       {
         box.y=box.y-6;
-        if (!(worldCollision(box, true)))
-          box.y=box.y+6;
       }
     }
     else if (down)
@@ -55,39 +44,25 @@ public class Player
       if (right)
       {
         box.x=box.x+4;
-        if (!(worldCollision(box, true)))
-          box.x=box.x-4;
         box.y=box.y+4;
-        if (!(worldCollision(box, true)))
-          box.y=box.y-4;
       }
       else if (left)
       {
         box.x=box.x-4;
-        if (!(worldCollision(box, true)))
-          box.x=box.x+4;
         box.y=box.y+4;
-        if (!(worldCollision(box, true)))
-          box.y=box.y-4;
       }
       else
       {
         box.y=box.y+6;
-        if (!(worldCollision(box, true)))
-          box.y=box.y-6;
       }
     }
     else if (left)
     {
       box.x=box.x-6;
-      if (!(worldCollision(box, true)))
-        box.x=box.x+6;
     }
     else if (right)
     {
       box.x=box.x+6;
-      if (!(worldCollision(box, true)))
-        box.x=box.x-6;
     }
   }
   
@@ -245,7 +220,7 @@ public class Player
                 Hole temp = new Hole();
                 temp.box.x=Math.round(box.x/64)*64;
                 temp.box.y=Math.round(box.y/64+1)*64;
-                if (worldCollision(temp.box, false))
+                if (worldCollision(temp.box))
                 {
                   if (Crossing.grid[box.x/64][box.y/64-1] == null || (Crossing.grid[box.x/64][box.y/64-1] instanceof Plants && Crossing.grid[box.x/64][box.y/64-1].state==0))
                   {
@@ -288,7 +263,7 @@ public class Player
                 Hole temp = new Hole();
                 temp.box.x=Math.round(box.x/64)*64;
                 temp.box.y=Math.round(box.y/64+1)*64;
-                if (worldCollision(temp.box, false))
+                if (worldCollision(temp.box))
                 {
                   if (Crossing.grid[box.x/64][box.y/64+1] == null || (Crossing.grid[box.x/64][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64][box.y/64+1].state==0))
                   {
@@ -331,7 +306,7 @@ public class Player
                 Hole temp = new Hole();
                 temp.box.x=Math.round(box.x/64-1)*64;
                 temp.box.y=Math.round(box.y/64)*64;
-                if (worldCollision(temp.box, false))
+                if (worldCollision(temp.box))
                 {
                   if (Crossing.grid[box.x/64-1][box.y/64] == null || (Crossing.grid[box.x/64-1][box.y/64] instanceof Plants && Crossing.grid[box.x/64-1][box.y/64].state==0))
                   {
@@ -372,7 +347,7 @@ public class Player
               Hole temp = new Hole();
               temp.box.x=Math.round(box.x/64+1)*64;
               temp.box.y=Math.round(box.y/64)*64;
-              if (worldCollision(temp.box, false))
+              if (worldCollision(temp.box))
               {
                 if (Crossing.grid[box.x/64+1][box.y/64] == null || (Crossing.grid[box.x/64+1][box.y/64] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64].state==0))
                 {
@@ -406,10 +381,7 @@ public class Player
               break;
             }//dig
             if (Crossing.inventory[0][0].equipment==2)
-            {
-              net();
-              break;
-            }//catch bug
+            {}//catch bug
             if (Crossing.inventory[0][0].equipment==3)
             {}//catch fish
             if (Crossing.inventory[0][0].equipment==4)
@@ -455,7 +427,7 @@ public class Player
                 Hole temp = new Hole();
                 temp.box.x=Math.round(box.x/64)*64;
                 temp.box.y=Math.round(box.y/64)*64;
-                if (worldCollision(temp.box, false))
+                if (worldCollision(temp.box))
                 {
                   if (Crossing.grid[box.x/64][box.y/64] == null || (Crossing.grid[box.x/64][box.y/64] instanceof Plants && Crossing.grid[box.x/64][box.y/64].state==0))
                   {
@@ -498,7 +470,7 @@ public class Player
                 Hole temp = new Hole();
                 temp.box.x=Math.round(box.x/64)*64;
                 temp.box.y=Math.round(box.y/64+2)*64;
-                if (worldCollision(temp.box, false))
+                if (worldCollision(temp.box))
                 {
                   if (Crossing.grid[box.x/64][box.y/64+2] == null || (Crossing.grid[box.x/64][box.y/64+2] instanceof Plants && Crossing.grid[box.x/64][box.y/64+2].state==0))
                   {
@@ -541,7 +513,7 @@ public class Player
                 Hole temp = new Hole();
                 temp.box.x=Math.round(box.x/64-1)*64;
                 temp.box.y=Math.round(box.y/64+1)*64;
-                if (worldCollision(temp.box, false))
+                if (worldCollision(temp.box))
                 {
                   if (Crossing.grid[box.x/64-1][box.y/64+1] == null || (Crossing.grid[box.x/64-1][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64-1][box.y/64+1].state==0))
                   {
@@ -582,7 +554,7 @@ public class Player
               Hole temp = new Hole();
               temp.box.x=Math.round(box.x/64+1)*64;
               temp.box.y=Math.round(box.y/64+1)*64;
-              if (worldCollision(temp.box, false))
+              if (worldCollision(temp.box))
               {
                 if (Crossing.grid[box.x/64+1][box.y/64+1] == null || (Crossing.grid[box.x/64+1][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64+1].state==0))
                 {
@@ -616,10 +588,7 @@ public class Player
               break;
             }
             if (Crossing.inventory[0][0].equipment==2)
-            {
-              net();
-              break;
-            }//catch bug
+            {}//catch bug
             if (Crossing.inventory[0][0].equipment==3)
             {}//catch fish
             if (Crossing.inventory[0][0].equipment==4)
@@ -655,112 +624,153 @@ public class Player
           if (Crossing.inventory[0][0].equipment==0)
             break;
           if (Crossing.inventory[0][0].equipment==1) 
-          {
-            if (lastDirection==0)
             {
-              if (Crossing.grid[box.x/64+1][box.y/64-1] instanceof Hole)
+              if (lastDirection==0)
               {
-                Crossing.grid[box.x/64+1][box.y/64-1]=null;
-                break;
-              }
-              Hole temp = new Hole();
-              temp.box.x=Math.round(box.x/64+1)*64;
-              temp.box.y=Math.round(box.y/64-1)*64;
-              if (worldCollision(temp.box, false))
-              {
-                if (Crossing.grid[box.x/64+1][box.y/64-1] == null || (Crossing.grid[box.x/64+1][box.y/64-1] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64-1].state==0))
+                if (Crossing.grid[box.x/64+1][box.y/64-1] instanceof Hole)
                 {
-                  Crossing.grid[box.x/64+1][box.y/64-1]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
+                  Crossing.grid[box.x/64+1][box.y/64-1]=null;
                   break;
                 }
-                if (Crossing.grid[box.x/64+1][box.y/64-1].state==0)
+                Hole temp = new Hole();
+                temp.box.x=Math.round(box.x/64+1)*64;
+                temp.box.y=Math.round(box.y/64-1)*64;
+                if (worldCollision(temp.box))
                 {
-                  for (int f=0; f<6; f++)
+                  if (Crossing.grid[box.x/64+1][box.y/64-1] == null || (Crossing.grid[box.x/64+1][box.y/64-1] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64-1].state==0))
                   {
-                    for (int k=1; k<4; k++)
+                    Crossing.grid[box.x/64+1][box.y/64-1]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
+                  }
+                  if (Crossing.grid[box.x/64+1][box.y/64-1].state==0)
+                  {
+                    for (int f=0; f<6; f++)
                     {
-                      if (Crossing.inventory[f][k]==null)
+                      for (int k=1; k<4; k++)
                       {
-                        Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64-1];
-                        f=7;
-                        k=4;
-                      }
-                      else if (f==5 && k==3)
-                      {
-                        System.out.println("Inventory is full!");
+                        if (Crossing.inventory[f][k]==null)
+                        {
+                          Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64-1];
+                          f=7;
+                          k=4;
+                        }
+                        else if (f==5 && k==3)
+                        {
+                          System.out.println("Inventory is full!");
+                        }
                       }
                     }
+                    Crossing.grid[box.x/64+1][box.y/64-1]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
                   }
-                  Crossing.grid[box.x/64+1][box.y/64-1]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
-                  break;
                 }
-              }
-              break;
-            }
-            if (lastDirection==1)
-            {
-              if (Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
-              {
-                Crossing.grid[box.x/64+1][box.y/64+1]=null;
                 break;
               }
-              Hole temp = new Hole();
-              temp.box.x=Math.round(box.x/64+1)*64;
-              temp.box.y=Math.round(box.y/64+1)*64;
-              if (worldCollision(temp.box, false))
+              if (lastDirection==1)
               {
-                if (Crossing.grid[box.x/64+1][box.y/64+1] == null || (Crossing.grid[box.x/64+1][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64+1].state==0))
+                if (Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
                 {
-                  Crossing.grid[box.x/64+1][box.y/64+1]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
+                  Crossing.grid[box.x/64+1][box.y/64+1]=null;
                   break;
                 }
-                if (Crossing.grid[box.x/64+1][box.y/64+1].state==0)
+                Hole temp = new Hole();
+                temp.box.x=Math.round(box.x/64+1)*64;
+                temp.box.y=Math.round(box.y/64+1)*64;
+                if (worldCollision(temp.box))
                 {
-                  for (int f=0; f<6; f++)
+                  if (Crossing.grid[box.x/64+1][box.y/64+1] == null || (Crossing.grid[box.x/64+1][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64+1].state==0))
                   {
-                    for (int k=1; k<4; k++)
+                    Crossing.grid[box.x/64+1][box.y/64+1]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
+                  }
+                  if (Crossing.grid[box.x/64+1][box.y/64+1].state==0)
+                  {
+                    for (int f=0; f<6; f++)
                     {
-                      if (Crossing.inventory[f][k]==null)
+                      for (int k=1; k<4; k++)
                       {
-                        Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64+1];
-                        f=7;
-                        k=4;
-                      }
-                      else if (f==5 && k==3)
-                      {
-                        System.out.println("Inventory is full!");
+                        if (Crossing.inventory[f][k]==null)
+                        {
+                          Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64+1];
+                          f=7;
+                          k=4;
+                        }
+                        else if (f==5 && k==3)
+                        {
+                          System.out.println("Inventory is full!");
+                        }
                       }
                     }
+                    Crossing.grid[box.x/64+1][box.y/64+1]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
                   }
-                  Crossing.grid[box.x/64+1][box.y/64+1]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
+                }
+                break;
+              }
+              if (lastDirection==2)
+              {
+                if (Crossing.grid[box.x/64][box.y/64] instanceof Hole)
+                {
+                  Crossing.grid[box.x/64][box.y/64]=null;
                   break;
                 }
+                Hole temp = new Hole();
+                temp.box.x=Math.round(box.x/64)*64;
+                temp.box.y=Math.round(box.y/64)*64;
+                if (worldCollision(temp.box))
+                {
+                  if (Crossing.grid[box.x/64][box.y/64] == null || (Crossing.grid[box.x/64][box.y/64] instanceof Plants && Crossing.grid[box.x/64][box.y/64].state==0))
+                  {
+                    Crossing.grid[box.x/64][box.y/64]=temp;
+                    box.x=(int)(Math.round(box.x/64.0)*64);
+                    break;
+                  }
+                  if (Crossing.grid[box.x/64][box.y/64].state==0)
+                  {
+                    for (int f=0; f<6; f++)
+                    {
+                      for (int k=1; k<4; k++)
+                      {
+                        if (Crossing.inventory[f][k]==null)
+                        {
+                          Crossing.inventory[f][k]=Crossing.grid[box.x/64][box.y/64];
+                          f=7;
+                          k=4;
+                        }
+                        else if (f==5 && k==3)
+                        {
+                          System.out.println("Inventory is full!");
+                        }
+                      }
+                    }
+                    Crossing.grid[box.x/64][box.y/64]=temp;
+                    box.x=(int)(Math.round(box.x/64.0)*64);
+                    break;
+                  }
+                }
+                break;
               }
-              break;
-            }
-            if (lastDirection==2)
-            {
-              if (Crossing.grid[box.x/64][box.y/64] instanceof Hole)
+              if (Crossing.grid[box.x/64+2][box.y/64] instanceof Hole)
               {
-                Crossing.grid[box.x/64][box.y/64]=null;
+                Crossing.grid[box.x/64+2][box.y/64]=null;
                 break;
               }
               Hole temp = new Hole();
-              temp.box.x=Math.round(box.x/64)*64;
+              temp.box.x=Math.round(box.x/64+2)*64;
               temp.box.y=Math.round(box.y/64)*64;
-              if (worldCollision(temp.box, false))
+              if (worldCollision(temp.box))
               {
-                if (Crossing.grid[box.x/64][box.y/64] == null || (Crossing.grid[box.x/64][box.y/64] instanceof Plants && Crossing.grid[box.x/64][box.y/64].state==0))
+                if (Crossing.grid[box.x/64+2][box.y/64] == null || (Crossing.grid[box.x/64+2][box.y/64] instanceof Plants && Crossing.grid[box.x/64+2][box.y/64].state==0))
                 {
-                  Crossing.grid[box.x/64][box.y/64]=temp;
+                  Crossing.grid[box.x/64+2][box.y/64]=temp;
                   box.x=(int)(Math.round(box.x/64.0)*64);
                   break;
                 }
-                if (Crossing.grid[box.x/64][box.y/64].state==0)
+                if (Crossing.grid[box.x/64+2][box.y/64].state==0)
                 {
                   for (int f=0; f<6; f++)
                   {
@@ -768,7 +778,7 @@ public class Player
                     {
                       if (Crossing.inventory[f][k]==null)
                       {
-                        Crossing.inventory[f][k]=Crossing.grid[box.x/64][box.y/64];
+                        Crossing.inventory[f][k]=Crossing.grid[box.x/64+2][box.y/64];
                         f=7;
                         k=4;
                       }
@@ -778,59 +788,15 @@ public class Player
                       }
                     }
                   }
-                  Crossing.grid[box.x/64][box.y/64]=temp;
+                  Crossing.grid[box.x/64+2][box.y/64]=temp;
                   box.x=(int)(Math.round(box.x/64.0)*64);
                   break;
                 }
               }
               break;
             }
-            if (Crossing.grid[box.x/64+2][box.y/64] instanceof Hole)
-            {
-              Crossing.grid[box.x/64+2][box.y/64]=null;
-              break;
-            }
-            Hole temp = new Hole();
-            temp.box.x=Math.round(box.x/64+2)*64;
-            temp.box.y=Math.round(box.y/64)*64;
-            if (worldCollision(temp.box, false))
-            {
-              if (Crossing.grid[box.x/64+2][box.y/64] == null || (Crossing.grid[box.x/64+2][box.y/64] instanceof Plants && Crossing.grid[box.x/64+2][box.y/64].state==0))
-              {
-                Crossing.grid[box.x/64+2][box.y/64]=temp;
-                box.x=(int)(Math.round(box.x/64.0)*64);
-                break;
-              }
-              if (Crossing.grid[box.x/64+2][box.y/64].state==0)
-              {
-                for (int f=0; f<6; f++)
-                {
-                  for (int k=1; k<4; k++)
-                  {
-                    if (Crossing.inventory[f][k]==null)
-                    {
-                      Crossing.inventory[f][k]=Crossing.grid[box.x/64+2][box.y/64];
-                      f=7;
-                      k=4;
-                    }
-                    else if (f==5 && k==3)
-                    {
-                      System.out.println("Inventory is full!");
-                    }
-                  }
-                }
-                Crossing.grid[box.x/64+2][box.y/64]=temp;
-                box.x=(int)(Math.round(box.x/64.0)*64);
-                break;
-              }
-            }
-            break;
-          }
           if (Crossing.inventory[0][0].equipment==2)
-          {
-            net();
-            break;
-          }//catch bug
+          {}//catch bug
           if (Crossing.inventory[0][0].equipment==3)
           {}//catch fish
           if (Crossing.inventory[0][0].equipment==4)
@@ -865,112 +831,153 @@ public class Player
           if (Crossing.inventory[0][0].equipment==0)
             break;
           if (Crossing.inventory[0][0].equipment==1) 
-          {
-            if (lastDirection==0)
             {
-              if (Crossing.grid[box.x/64+1][box.y/64] instanceof Hole)
+              if (lastDirection==0)
               {
-                Crossing.grid[box.x/64+1][box.y/64]=null;
-                break;
-              }
-              Hole temp = new Hole();
-              temp.box.x=Math.round(box.x/64+1)*64;
-              temp.box.y=Math.round(box.y/64)*64;
-              if (worldCollision(temp.box, false))
-              {
-                if (Crossing.grid[box.x/64+1][box.y/64] == null || (Crossing.grid[box.x/64+1][box.y/64] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64].state==0))
+                if (Crossing.grid[box.x/64+1][box.y/64] instanceof Hole)
                 {
-                  Crossing.grid[box.x/64+1][box.y/64]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
+                  Crossing.grid[box.x/64+1][box.y/64]=null;
                   break;
                 }
-                if (Crossing.grid[box.x/64+1][box.y/64].state==0)
+                Hole temp = new Hole();
+                temp.box.x=Math.round(box.x/64+1)*64;
+                temp.box.y=Math.round(box.y/64)*64;
+                if (worldCollision(temp.box))
                 {
-                  for (int f=0; f<6; f++)
+                  if (Crossing.grid[box.x/64+1][box.y/64] == null || (Crossing.grid[box.x/64+1][box.y/64] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64].state==0))
                   {
-                    for (int k=1; k<4; k++)
+                    Crossing.grid[box.x/64+1][box.y/64]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
+                  }
+                  if (Crossing.grid[box.x/64+1][box.y/64].state==0)
+                  {
+                    for (int f=0; f<6; f++)
                     {
-                      if (Crossing.inventory[f][k]==null)
+                      for (int k=1; k<4; k++)
                       {
-                        Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64];
-                        f=7;
-                        k=4;
-                      }
-                      else if (f==5 && k==3)
-                      {
-                        System.out.println("Inventory is full!");
+                        if (Crossing.inventory[f][k]==null)
+                        {
+                          Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64];
+                          f=7;
+                          k=4;
+                        }
+                        else if (f==5 && k==3)
+                        {
+                          System.out.println("Inventory is full!");
+                        }
                       }
                     }
+                    Crossing.grid[box.x/64+1][box.y/64]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
                   }
-                  Crossing.grid[box.x/64+1][box.y/64]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
-                  break;
                 }
-              }
-              break;
-            }
-            if (lastDirection==1)
-            {
-              if (Crossing.grid[box.x/64+1][box.y/64+2] instanceof Hole)
-              {
-                Crossing.grid[box.x/64+1][box.y/64+2]=null;
                 break;
               }
-              Hole temp = new Hole();
-              temp.box.x=Math.round(box.x/64+1)*64;
-              temp.box.y=Math.round(box.y/64+2)*64;
-              if (worldCollision(temp.box, false))
+              if (lastDirection==1)
               {
-                if (Crossing.grid[box.x/64+1][box.y/64+2] == null || (Crossing.grid[box.x/64+1][box.y/64+2] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64+2].state==0))
+                if (Crossing.grid[box.x/64+1][box.y/64+2] instanceof Hole)
                 {
-                  Crossing.grid[box.x/64+1][box.y/64+2]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
+                  Crossing.grid[box.x/64+1][box.y/64+2]=null;
                   break;
                 }
-                if (Crossing.grid[box.x/64+1][box.y/64+2].state==0)
+                Hole temp = new Hole();
+                temp.box.x=Math.round(box.x/64+1)*64;
+                temp.box.y=Math.round(box.y/64+2)*64;
+                if (worldCollision(temp.box))
                 {
-                  for (int f=0; f<6; f++)
+                  if (Crossing.grid[box.x/64+1][box.y/64+2] == null || (Crossing.grid[box.x/64+1][box.y/64+2] instanceof Plants && Crossing.grid[box.x/64+1][box.y/64+2].state==0))
                   {
-                    for (int k=1; k<4; k++)
+                    Crossing.grid[box.x/64+1][box.y/64+2]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
+                  }
+                  if (Crossing.grid[box.x/64+1][box.y/64+2].state==0)
+                  {
+                    for (int f=0; f<6; f++)
                     {
-                      if (Crossing.inventory[f][k]==null)
+                      for (int k=1; k<4; k++)
                       {
-                        Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64+2];
-                        f=7;
-                        k=4;
-                      }
-                      else if (f==5 && k==3)
-                      {
-                        System.out.println("Inventory is full!");
+                        if (Crossing.inventory[f][k]==null)
+                        {
+                          Crossing.inventory[f][k]=Crossing.grid[box.x/64+1][box.y/64+2];
+                          f=7;
+                          k=4;
+                        }
+                        else if (f==5 && k==3)
+                        {
+                          System.out.println("Inventory is full!");
+                        }
                       }
                     }
+                    Crossing.grid[box.x/64+1][box.y/64+2]=temp;
+                    box.y=(int)(Math.round(box.y/64.0)*64);
+                    break;
                   }
-                  Crossing.grid[box.x/64+1][box.y/64+2]=temp;
-                  box.y=(int)(Math.round(box.y/64.0)*64);
+                }
+                break;
+              }
+              if (lastDirection==2)
+              {
+                if (Crossing.grid[box.x/64][box.y/64+1] instanceof Hole)
+                {
+                  Crossing.grid[box.x/64][box.y/64+1]=null;
                   break;
                 }
+                Hole temp = new Hole();
+                temp.box.x=Math.round(box.x/64)*64;
+                temp.box.y=Math.round(box.y/64+1)*64;
+                if (worldCollision(temp.box))
+                {
+                  if (Crossing.grid[box.x/64][box.y/64+1] == null || (Crossing.grid[box.x/64][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64][box.y/64+1].state==0))
+                  {
+                    Crossing.grid[box.x/64][box.y/64+1]=temp;
+                    box.x=(int)(Math.round(box.x/64.0)*64);
+                    break;
+                  }
+                  if (Crossing.grid[box.x/64][box.y/64+1].state==0)
+                  {
+                    for (int f=0; f<6; f++)
+                    {
+                      for (int k=1; k<4; k++)
+                      {
+                        if (Crossing.inventory[f][k]==null)
+                        {
+                          Crossing.inventory[f][k]=Crossing.grid[box.x/64][box.y/64+1];
+                          f=7;
+                          k=4;
+                        }
+                        else if (f==5 && k==3)
+                        {
+                          System.out.println("Inventory is full!");
+                        }
+                      }
+                    }
+                    Crossing.grid[box.x/64][box.y/64+1]=temp;
+                    box.x=(int)(Math.round(box.x/64.0)*64);
+                    break;
+                  }
+                }
+                break;
               }
-              break;
-            }
-            if (lastDirection==2)
-            {
-              if (Crossing.grid[box.x/64][box.y/64+1] instanceof Hole)
+              if (Crossing.grid[box.x/64+2][box.y/64+1] instanceof Hole)
               {
-                Crossing.grid[box.x/64][box.y/64+1]=null;
+                Crossing.grid[box.x/64+2][box.y/64+1]=null;
                 break;
               }
               Hole temp = new Hole();
-              temp.box.x=Math.round(box.x/64)*64;
+              temp.box.x=Math.round(box.x/64+2)*64;
               temp.box.y=Math.round(box.y/64+1)*64;
-              if (worldCollision(temp.box, false))
+              if (worldCollision(temp.box))
               {
-                if (Crossing.grid[box.x/64][box.y/64+1] == null || (Crossing.grid[box.x/64][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64][box.y/64+1].state==0))
+                if (Crossing.grid[box.x/64+2][box.y/64+1] == null || (Crossing.grid[box.x/64+2][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64+2][box.y/64+1].state==0))
                 {
-                  Crossing.grid[box.x/64][box.y/64+1]=temp;
+                  Crossing.grid[box.x/64+2][box.y/64+1]=temp;
                   box.x=(int)(Math.round(box.x/64.0)*64);
                   break;
                 }
-                if (Crossing.grid[box.x/64][box.y/64+1].state==0)
+                if (Crossing.grid[box.x/64+2][box.y/64+1].state==0)
                 {
                   for (int f=0; f<6; f++)
                   {
@@ -978,7 +985,7 @@ public class Player
                     {
                       if (Crossing.inventory[f][k]==null)
                       {
-                        Crossing.inventory[f][k]=Crossing.grid[box.x/64][box.y/64+1];
+                        Crossing.inventory[f][k]=Crossing.grid[box.x/64+2][box.y/64+1];
                         f=7;
                         k=4;
                       }
@@ -988,59 +995,15 @@ public class Player
                       }
                     }
                   }
-                  Crossing.grid[box.x/64][box.y/64+1]=temp;
+                  Crossing.grid[box.x/64+2][box.y/64+1]=temp;
                   box.x=(int)(Math.round(box.x/64.0)*64);
                   break;
                 }
               }
               break;
             }
-            if (Crossing.grid[box.x/64+2][box.y/64+1] instanceof Hole)
-            {
-              Crossing.grid[box.x/64+2][box.y/64+1]=null;
-              break;
-            }
-            Hole temp = new Hole();
-            temp.box.x=Math.round(box.x/64+2)*64;
-            temp.box.y=Math.round(box.y/64+1)*64;
-            if (worldCollision(temp.box, false))
-            {
-              if (Crossing.grid[box.x/64+2][box.y/64+1] == null || (Crossing.grid[box.x/64+2][box.y/64+1] instanceof Plants && Crossing.grid[box.x/64+2][box.y/64+1].state==0))
-              {
-                Crossing.grid[box.x/64+2][box.y/64+1]=temp;
-                box.x=(int)(Math.round(box.x/64.0)*64);
-                break;
-              }
-              if (Crossing.grid[box.x/64+2][box.y/64+1].state==0)
-              {
-                for (int f=0; f<6; f++)
-                {
-                  for (int k=1; k<4; k++)
-                  {
-                    if (Crossing.inventory[f][k]==null)
-                    {
-                      Crossing.inventory[f][k]=Crossing.grid[box.x/64+2][box.y/64+1];
-                      f=7;
-                      k=4;
-                    }
-                    else if (f==5 && k==3)
-                    {
-                      System.out.println("Inventory is full!");
-                    }
-                  }
-                }
-                Crossing.grid[box.x/64+2][box.y/64+1]=temp;
-                box.x=(int)(Math.round(box.x/64.0)*64);
-                break;
-              }
-            }
-            break;
-          }
           if (Crossing.inventory[0][0].equipment==2)
-          {
-            net();
-            break;
-          }//catch bug
+          {}//catch bug
           if (Crossing.inventory[0][0].equipment==3)
           {}//catch fish
           if (Crossing.inventory[0][0].equipment==4)
@@ -1812,6 +1775,13 @@ public class Player
       right=false;
   }
   
+  public void paint(Graphics g)
+  {
+    Graphics2D g2d = (Graphics2D) g;
+    g2d.setColor(Color.orange);
+    g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
+  }
+  
   public void functionOne(int k, int l)
   {
     for (int a=-1; a<2; a++)
@@ -1827,50 +1797,8 @@ public class Player
     }
   }
   
-  public void net()
+  public boolean worldCollision(Rectangle c)
   {
-    Rectangle temp;
-    if (lastDirection==0)
-      temp = new Rectangle(box.x, box.y-64, 64, 64);
-    else if (lastDirection==1)
-      temp = new Rectangle(box.x, box.y+64, 64, 64);
-    else if (lastDirection==2)
-      temp = new Rectangle(box.x-64, box.y, 64, 64);
-    else
-      temp = new Rectangle(box.x+64, box.y, 64, 64);
-    loop: for (int a=-1; a<2; a++)
-    {
-      for (int b=-1; b<2; b++)
-      {
-        for (int d=0; d<Crossing.bugs[temp.x/64+a][temp.y/64+b].size(); d++)
-        {
-          if (Crossing.bugs[temp.x/64+a][temp.y/64+b].get(d).box.intersects(temp))
-          {
-            for (int f=0; f<6; f++)
-            {
-              for (int s=1; s<4; s++)
-              {
-                if (Crossing.inventory[f][s]==null)
-                {
-                  Crossing.inventory[f][s]=Crossing.bugs[temp.x/64+a][temp.y/64+b].get(d);
-                  Crossing.bugs[temp.x/64+a][temp.y/64+b].remove(d);
-                  break loop;
-                }
-                else if (f==5 && s==3)
-                {
-                  System.out.println("Inventory is full!");
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  public boolean worldCollision(Rectangle c, boolean playerMoving)
-  {
-    if (Crossing.grid[box.x/64][box.y/64] instanceof Hole ||  Crossing.grid[(box.x+63)/64][box.y/64] instanceof Hole || Crossing.grid[box.x/64][(box.y+63)/64] instanceof Hole || Crossing.grid[(box.x+63)/64][(box.y+63)/64] instanceof Hole)
-      return false;
     for (int a=-1; a<2; a++)
     {
       for (int b=-1; b<2; b++)
@@ -1878,14 +1806,7 @@ public class Player
         for (int d=0; d<Crossing.bugs[c.x/64+a][c.y/64+b].size(); d++)
         {
           if (Crossing.bugs[c.x/64+a][c.y/64+b].get(d).box.intersects(c))
-          {
-            if (playerMoving)
-            {
-              Crossing.bugs[c.x/64+a][c.y/64+b].get(d).steppedOn();
-            }
-            else
-              return false;
-          }
+            return false;
         }
         for (int d=0; d<Crossing.villagers[c.x/64+a][c.y/64+b].size(); d++)
         {
@@ -1900,5 +1821,10 @@ public class Player
         return false;
     }
     return true;
+  }
+  
+  public void dropChecker()
+  {
+    
   }
 }

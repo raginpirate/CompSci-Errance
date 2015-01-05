@@ -7,29 +7,36 @@ import java.util.ArrayList;
  * EXCEPT FOR IF IT REFERS TO ANOTHER CLASS
  * Once you have finished reading this, read Graphix, Entity and then Bugs. Everything else is the same as bugs except with different methods.
  */
+
 public class Crossing
 {
   static final int PLAYERLOCATION=368;
   static JFrame frame = new JFrame("Crossing v0.2");
   static ArrayList<Bugs>[][] bugs = new ArrayList[60][40];
-  static ArrayList<HoppingBugs>[][] hoppingBugs = new ArrayList[60][40];
   static ArrayList<FlyingBugs>[][] flyingBugs = new ArrayList[60][40];
   static ArrayList<Fish>[][] fish = new ArrayList[60][40];
   static ArrayList<Villagers>[][] villagers = new ArrayList[60][40];
-  static ArrayList<Plants>[][] plants = new ArrayList[60][40];
+  static Entity[][] grid = new Entity[60][40];
+  static Entity[][] inventory = new Entity[6][4];
   static Rectangle npcBoundaries[] = new Rectangle[1];
   static Rectangle worldWalls[] = new Rectangle[1];
-  static boolean holes[][] = new boolean[60][40];
   static Player player = new Player();
-  static Entity[][] inventory = new Entity[6][3];
   
   public static void main(String [] args)
     throws InterruptedException
   {
     fillArray();
     frame();
+    inventory[0][0]=new Fish("fish", 9, 9, 0);
+    inventory[0][0].equipment=1;
     inventory[3][2]=new Fish("fish", 9, 9, 0);
-    flyingBugs[12][12].add(new FlyingBugs("bug", 12, 12, 0));
+    inventory[4][1]=new Plants("plant", true);
+    inventory[5][1]=new Plants("plant", true);
+    inventory[4][2]=new Plants("plant", true);
+    inventory[5][2]=new Plants("plant", true);
+    fish[11][11].add(new Fish("fish", 11, 11, 0));
+    bugs[12][12].add(new Bugs("bug", 12, 12, 0));
+    grid[13][13]=new Hole();
     worldUpdate();
   }
   
@@ -40,14 +47,12 @@ public class Crossing
       for (int b=0; b<40; b++)
       {
         bugs[a][b] = new ArrayList<Bugs>();
-        hoppingBugs[a][b] = new ArrayList<HoppingBugs>();
         flyingBugs[a][b] = new ArrayList<FlyingBugs>();
         fish[a][b] = new ArrayList<Fish>();
         villagers[a][b] = new ArrayList<Villagers>();
-        plants[a][b] = new ArrayList<Plants>();
         if (a<8 || a>52 || b<8 || b>32)
         {
-          holes[a][b] = true;
+          grid[a][b] = new Hole();
         }
       }
     }
@@ -83,23 +88,19 @@ public class Crossing
       {
         for (int c=0; c<bugs[a][b].size(); c++)
         {
-          bugs[a][b].get(c).move();
+          bugs[a][b].get(c).update();
         }
         for (int c=0; c<flyingBugs[a][b].size(); c++)
         {
-          flyingBugs[a][b].get(c).move();
+          flyingBugs[a][b].get(c).update();
         }
         for (int c=0; c<fish[a][b].size(); c++)
         {
-          fish[a][b].get(c).move();
+          fish[a][b].get(c).update();
         }
         for (int c=0; c<villagers[a][b].size(); c++)
         {
-          villagers[a][b].get(c).move();
-        }
-        for (int c=0; c<plants[a][b].size(); c++)
-        {
-          plants[a][b].get(c).move();
+          villagers[a][b].get(c).update();
         }
       }
     }

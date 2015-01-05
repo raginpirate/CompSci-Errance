@@ -8,7 +8,6 @@ abstract class Entity
   Rectangle box = new Rectangle(0,0,64,64);
   boolean eat;
   int state;
-  int equipment;
   BufferedImage image;
   abstract void update();
   abstract boolean interact();

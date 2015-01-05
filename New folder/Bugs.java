@@ -16,57 +16,122 @@ public class Bugs extends Entity
   private int boundary;
   private int maxLoops=0;
   private boolean collided=false;
+  private int waitCount=0;
+  private double rotation=0;
+  private double newAngle=0;
   
   public Bugs(String s, int a, int b, int boundary)
   {
-    eat=true;
+    eat=false;
     image = Graphix.buffer(s + ".jpg");
-    ani1 = Graphix.buffer(s + 1 + ".jpg");
-    ani2 = Graphix.buffer(s + 2 + ".jpg");
-    ani3 = Graphix.buffer(s + 3 + ".jpg");
+    ani1 = Graphix.buffer(s + "1.jpg");
+    ani2 = Graphix.buffer(s + "2.jpg");
+    ani3 = Graphix.buffer(s + "3.jpg");
     this.boundary = boundary;
     box.x=a*64;
     box.y=b*64;
+    state=2;
   }
   
-  public void move()
+//  public void update()
+//  {
+//    Crossing.bugs[box.x/64][box.y/64].remove(this);
+//    count=count+1;
+//    box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
+//    box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
+//    if (maxLoops==0 || collision())
+//    {
+//      box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
+//      box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
+//      Crossing.bugs[box.x/64][box.y/64].add(this);
+//      maxLoops=(int)(Math.random()*20);
+//      if (collided)
+//      {
+//        angle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
+//        if (angle<0)
+//          angle = angle+Math.PI*2;
+//        collided=false;
+//      }
+//      else
+//        angle = Math.random()*Math.PI*2;
+//      count=0;
+//    }
+//    else
+//    {
+//      Crossing.bugs[box.x/64][box.y/64].add(this);
+//      maxLoops--;
+//      if (animation==2)
+//        aniAdd=-1;
+//      else if (animation==0)
+//        aniAdd=1;
+//      animation=animation+aniAdd;
+//    }
+//  }
+  
+  public void update()
   {
-    Crossing.bugs[box.x/64][box.y/64].remove(this);
-    count=count+1;
-    box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
-    box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-    if (maxLoops==0 || collision())
+    if (waitCount>10)
     {
-      box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
-      box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-      Crossing.bugs[box.x/64][box.y/64].add(this);
-      maxLoops=(int)(Math.random()*20);
-      if (collided)
-      {
-        angle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
-        if (angle<0)
-          angle = angle+Math.PI*2;
-        collided=false;
-      }
-      else
-        angle = Math.random()*Math.PI*2;
-      count=0;
+      waitCount--;
+    }
+    else if (waitCount>0)
+    {
+      waitCount--;
+      angle=angle+rotation;
     }
     else
     {
+      count=count-2;
+      Crossing.bugs[box.x/64][box.y/64].remove(this);
+      if (collided)
+      {
+        box.x= (int)(box.x+10*Math.cos(angle));
+        box.y= (int)(box.y+10*Math.sin(angle));
+        if (collision())
+        {
+          collided=false;
+          box.x= (int)(box.x-10*Math.cos(angle));
+          box.y= (int)(box.y-10*Math.sin(angle));
+        }
+      }
+      box.y=box.y-count;
       Crossing.bugs[box.x/64][box.y/64].add(this);
-      maxLoops--;
-      if (animation==2)
-        aniAdd=-1;
-      else if (animation==0)
-        aniAdd=1;
-      animation=animation+aniAdd;
+      if (animation!=2)
+        animation=2;
+      else
+        animation=1;
+      if (count==-8)
+      {
+        animation=0;
+        count=10;
+        waitCount=(int)(Math.random()*20)+10;
+        angle=newAngle;
+        if (collided==false)
+        {
+          newAngle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
+          if (newAngle<0)
+            newAngle = newAngle+Math.PI*2;
+          collided=true;
+        }
+        else
+          newAngle = Math.random()*Math.PI*2;
+        rotation = newAngle-angle;
+        if (Math.abs(rotation)>Math.PI)
+        {
+          if (rotation>0)
+            rotation=(rotation-Math.PI*2)/10;
+          else
+            rotation=(rotation+Math.PI*2)/10;
+        }
+        else
+          rotation=rotation/10;
+      }
     }
   }
   
   public boolean collision()
   {
-    if (!(Crossing.npcBoundaries[boundary].intersects(box)) || Crossing.holes[box.x/64][box.y/64] ||  Crossing.holes[box.x/64+1][box.y/64] || Crossing.holes[box.x/64][box.y/64+1] || Crossing.holes[box.x/64+1][box.y/64+1])
+    if (!(Crossing.npcBoundaries[boundary].intersects(box)) || Crossing.grid[box.x/64][box.y/64] instanceof Hole ||  Crossing.grid[box.x/64+1][box.y/64] instanceof Hole || Crossing.grid[box.x/64][box.y/64+1] instanceof Hole || Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
     {
       collided=true;
       return true;
@@ -82,12 +147,47 @@ public class Bugs extends Entity
     return false;
   }
   
+  public boolean interact()
+  {
+    if (state==0)
+      return false;
+    loop: for (int f=0; f<6; f++)
+    {
+      for (int k=1; k<4; k++)
+      {
+        if (Crossing.inventory[f][k]==null)
+        {
+          Crossing.inventory[f][k]=this;
+          Crossing.grid[box.x/64][box.y/64]=null;
+          break loop;
+        }
+        else if (f==5 && k==3)
+        {
+          //Drops to the grid
+          //Crossing.grid[box.x/64][box.y/64]=null;
+          System.out.println("Inventory is full!");
+        }
+      }
+    }
+    return true;
+  }
+  
+  public void steppedOn()
+  {
+    Crossing.bugs[box.x/64][box.y/64].remove(this);
+    System.out.println("You stepped on a bug!");
+  }
+  
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;
     AffineTransform rotate = AffineTransform.getRotateInstance(angle+Math.PI/2, image.getWidth()/2, image.getHeight()/2);
     AffineTransformOp translate = new AffineTransformOp(rotate, AffineTransformOp.TYPE_BILINEAR);
-    if (animation==0)
+    if (state==0)
+      g2d.drawImage(Graphix.star, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    else if (state==1)
+      g2d.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    else if (animation==0)
       g2d.drawImage(translate.filter(ani1, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
     else if (animation==1)
       g2d.drawImage(translate.filter(ani2, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
