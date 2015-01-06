@@ -83,9 +83,9 @@ public class Graphix extends JPanel
     };
     Action space = new AbstractAction()
     {
-      public void actionPerformed(ActionEvent e) 
+      public void actionPerformed(ActionEvent e)
       {
-        Crossing.player.input(" ");
+        Crossing.player.spaceBar();
       }
     };
     Action q = new AbstractAction()

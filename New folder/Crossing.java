@@ -21,6 +21,7 @@ public class Crossing
   static Rectangle npcBoundaries[] = new Rectangle[1];
   static Rectangle worldWalls[] = new Rectangle[1];
   static Player player = new Player();
+  static Items bobber = new Items();
   
   public static void main(String [] args)
     throws InterruptedException
@@ -30,6 +31,7 @@ public class Crossing
     inventory[0][0]=new Fish("fish", 9, 9, 0);
     inventory[0][0].equipment=2;
     inventory[3][2]=new Fish("fish", 9, 9, 0);
+    inventory[3][2].equipment=1;
     inventory[4][1]=new Plants("plant", true);
     inventory[5][1]=new Plants("plant", true);
     inventory[4][2]=new Plants("plant", true);
@@ -41,7 +43,7 @@ public class Crossing
     worldUpdate();
   }
   
-  public static void fillArray()
+  private static void fillArray()
   {
     for(int a=0; a<60; a++)
     {
@@ -61,7 +63,7 @@ public class Crossing
     worldWalls[0]=new Rectangle(1000,1000,1000, 1000);
   }
   
-  public static void frame()
+  private static void frame()
   {
     frame.setSize(800, 800);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +71,7 @@ public class Crossing
     frame.setVisible(true);
   }
   
-  public static void worldUpdate()
+  private static void worldUpdate()
     throws InterruptedException
   {
     while(true)
@@ -80,7 +82,7 @@ public class Crossing
     }
   }
   
-  public static void movement()
+  private static void movement()
   {
     player.move();
     for (int a=0; a<60; a++)
@@ -88,21 +90,13 @@ public class Crossing
       for (int b=0; b<40; b++)
       {
         for (int c=0; c<bugs[a][b].size(); c++)
-        {
           bugs[a][b].get(c).update();
-        }
         for (int c=0; c<flyingBugs[a][b].size(); c++)
-        {
           flyingBugs[a][b].get(c).update();
-        }
         for (int c=0; c<fish[a][b].size(); c++)
-        {
           fish[a][b].get(c).update();
-        }
         for (int c=0; c<villagers[a][b].size(); c++)
-        {
           villagers[a][b].get(c).update();
-        }
       }
     }
   }

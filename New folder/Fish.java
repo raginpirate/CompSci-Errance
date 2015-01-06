@@ -110,7 +110,7 @@ public class Fish extends Entity
     }
   }
   
-  public boolean collision()
+  private boolean collision()
   {
     if (!(Crossing.npcBoundaries[boundary].intersects(box)))
       return true;
@@ -138,8 +138,6 @@ public class Fish extends Entity
         }
         else if (f==5 && k==3)
         {
-          //Drops to the grid
-          //Crossing.grid[box.x/64][box.y/64]=null;
           System.out.println("Inventory is full!");
         }
       }

@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 public class Villagers extends Entity
 {
-  public double angle=2;
+  private double angle=2;
   private int waitCount=0;
   private int maxLoops=0;
   private BufferedImage ani1;
@@ -75,7 +75,7 @@ public class Villagers extends Entity
     }
   }
   
-  public boolean collision()
+  private boolean collision()
   {
     if (box.intersects(Crossing.player.box))
       return true;
