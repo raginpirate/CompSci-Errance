@@ -20,8 +20,10 @@ public class Crossing
   static Entity[][] inventory = new Entity[6][4];
   static Rectangle npcBoundaries[] = new Rectangle[1];
   static Rectangle worldWalls[] = new Rectangle[1];
+  static Rectangle water[] = new Rectangle[1];
   static Player player = new Player();
   static Items bobber = new Items();
+  static Fish caught;
   
   public static void main(String [] args)
     throws InterruptedException
@@ -29,13 +31,14 @@ public class Crossing
     fillArray();
     frame();
     inventory[0][0]=new Fish("fish", 9, 9, 0);
-    inventory[0][0].equipment=2;
+    inventory[0][0].equipment=3;
     inventory[3][2]=new Fish("fish", 9, 9, 0);
     inventory[3][2].equipment=1;
     inventory[4][1]=new Plants("plant", true);
     inventory[5][1]=new Plants("plant", true);
     inventory[4][2]=new Plants("plant", true);
     inventory[5][2]=new Plants("plant", true);
+    fish[14][13].add(new Fish("fish", 14, 13, 0));
     bugs[11][11].add(new Bugs("bug", 11, 11, 0));
     villagers[13][12].add(new Villagers("villager", 13, 12));
     bugs[12][12].add(new Bugs("bug", 12, 12, 0));
@@ -60,6 +63,7 @@ public class Crossing
       }
     }
     npcBoundaries[0]=new Rectangle(512,512,1000, 1000);
+    water[0]=new Rectangle(800,800,500,500);
     worldWalls[0]=new Rectangle(1000,1000,1000, 1000);
   }
   

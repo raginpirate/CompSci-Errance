@@ -173,6 +173,9 @@ public class Graphix extends JPanel
     Graphics2D g2d = (Graphics2D) g;
     super.paintComponent(g);
     g2d.drawImage(back, (int)(Crossing.PLAYERLOCATION-Crossing.player.box.x), (int)(Crossing.PLAYERLOCATION-Crossing.player.box.y), this);
+    g2d.setColor(Color.blue);
+    g2d.drawRect(Crossing.water[0].x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.water[0].y-Crossing.player.box.y+Crossing.PLAYERLOCATION, Crossing.water[0].width, Crossing.water[0].height);
+    Crossing.bobber.paint(g);
     g2d.setColor(Color.orange);
     g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
     for (int a=-8; a<8; a++)

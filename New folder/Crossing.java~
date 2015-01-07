@@ -90,21 +90,13 @@ public class Crossing
       for (int b=0; b<40; b++)
       {
         for (int c=0; c<bugs[a][b].size(); c++)
-        {
           bugs[a][b].get(c).update();
-        }
         for (int c=0; c<flyingBugs[a][b].size(); c++)
-        {
           flyingBugs[a][b].get(c).update();
-        }
         for (int c=0; c<fish[a][b].size(); c++)
-        {
           fish[a][b].get(c).update();
-        }
         for (int c=0; c<villagers[a][b].size(); c++)
-        {
           villagers[a][b].get(c).update();
-        }
       }
     }
   }

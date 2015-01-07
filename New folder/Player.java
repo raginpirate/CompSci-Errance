@@ -9,6 +9,7 @@ public class Player
   int selected1x;
   int selected1y;
   int selected2;
+  private boolean fishing=false;
   private boolean up;
   private boolean down;
   private boolean left;
@@ -160,7 +161,8 @@ public class Player
     }
     
     if (s=="e")
-      System.out.println("Run function hotkey(e)");
+      System.out.println(box.x + " " + box.y);
+      //System.out.println("Run function hotkey(e)");
     
     if (s=="r")
       System.out.println("Run function hotkey(r)");
@@ -197,6 +199,33 @@ public class Player
   {
     try
     {
+      if (fishing)
+      {
+        fishing=false;
+        Crossing.bobber.box.x=0;
+        Crossing.bobber.box.y=0;
+        if(Crossing.caught!= null)
+        {
+          for (int f=0; f<6; f++)
+          {
+            for (int s=1; s<4; s++)
+            {
+              if (Crossing.inventory[f][s]==null)
+              {
+                Crossing.inventory[f][s]=Crossing.caught;
+                Crossing.fish[Crossing.bobber.box.x][Crossing.bobber.box.y].remove(Crossing.caught);
+                Crossing.caught=null;
+                throw new Exception();
+              }
+              else if (f==5 && s==3)
+              {
+                System.out.println("Inventory is full!");
+                throw new Exception();
+              }
+            }
+          }
+        }
+      }
       switch(menu)
       {
         //When we are not using the inventory (case 0)
@@ -442,6 +471,7 @@ public class Player
                   else if (f==5 && s==3)
                   {
                     System.out.println("Inventory is full!");
+                    throw new Exception();
                   }
                 }
               }
@@ -452,7 +482,29 @@ public class Player
       throw new Exception();
     }//catch bug
     if (Crossing.inventory[0][0].equipment==3)
-    {}//catch fish
+    {
+      if (x==0)
+      {
+        Crossing.bobber.box.x=box.x+24;
+        Crossing.bobber.box.y=box.x+y*192;
+      }
+      else
+      {
+        Crossing.bobber.box.x=box.x+x*192;
+        Crossing.bobber.box.y=box.x+24;
+      }
+      for (Rectangle d:Crossing.water)
+      {
+        if (Crossing.bobber.box.intersects(d))
+        {
+          fishing=true;
+          throw new Exception();
+        }
+      }
+      Crossing.bobber.box.x=0;
+      Crossing.bobber.box.y=0;
+      throw new Exception();
+    }//catch fish
     if (Crossing.inventory[0][0].equipment==4)
     {}//water
     if (Crossing.inventory[0][0].equipment==5)
