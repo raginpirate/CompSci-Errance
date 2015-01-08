@@ -59,113 +59,120 @@ public class Player
   
   public void input(String s)
   {
-    if (s=="up")
+    if (!fishing)
     {
-      lastDirection=0;
-      if (menu>1)
+      if (s=="up")
       {
-        if (selected2>0)
-          selected2--;
-      }
-      else if (menu==1)
-      {
-        if (selected1y>0)
+        lastDirection=0;
+        if (menu>1)
         {
-          selected1y--;
-          if (selected1y==0)
-            selected1x=0;
+          if (selected2>0)
+            selected2--;
         }
-      }
-      else
-        up=true;
-    }
-    
-    if (s=="down")
-    {
-      lastDirection=1;
-      if (menu>1)
-      {
-        if (selected2<(menu-1)/2+2)
-          selected2++;
-      }
-      else if (menu==1)
-      {
-        if (selected1y<3)
-          selected1y++;
-      }
-      else 
-        down=true;
-    }
-    
-    if (s=="left")
-    {
-      lastDirection=2;
-      if (menu==1)
-      {
-        if (selected1x>0)
-          selected1x--;
-      }
-      else if (menu == 0)
-        left=true;
-    }
-    
-    if (s=="right")
-    {
-      lastDirection=3;
-      if (menu==1)
-      {
-        if (selected1x<5 && selected1y!=0)
-          selected1x++;
-      }
-      else if (menu == 0)
-        right=true;
-    }
-    
-    if (s=="q")
-    {
-      if (menu>0)
-      {
-        menu=0;
-        buryx=0;
-      }
-      else
-      {
-        menu=1;
-        if (box.x%64<32)
+        else if (menu==1)
         {
-          if (box.y%64<32)
-            checkNearbyHoles(0, 0);
-          else
-            checkNearbyHoles(0, 1);
-        }
-        else if (box.y%64<32)
-          checkNearbyHoles(1, 0);
-        else
-          checkNearbyHoles(1, 1);
-      }
-    }
-    
-    if (s=="w")
-    {
-      for(int a=0; a<60; a++)
-      {
-        for (int b=0; b<40; b++)
-        {
-          if (Crossing.grid[a][b] instanceof Plants)
+          if (selected1y>0)
           {
-            if (Crossing.grid[a][b].state==0)
-              Crossing.grid[a][b].update();
+            selected1y--;
+            if (selected1y==0)
+              selected1x=0;
+          }
+        }
+        else
+          up=true;
+      }
+      
+      if (s=="down")
+      {
+        lastDirection=1;
+        if (menu>1)
+        {
+          if (selected2<(menu-1)/2+2)
+            selected2++;
+        }
+        else if (menu==1)
+        {
+          if (selected1y<3)
+            selected1y++;
+        }
+        else 
+          down=true;
+      }
+      
+      if (s=="left")
+      {
+        lastDirection=2;
+        if (menu==1)
+        {
+          if (selected1x>0)
+            selected1x--;
+        }
+        else if (menu == 0)
+          left=true;
+      }
+      
+      if (s=="right")
+      {
+        lastDirection=3;
+        if (menu==1)
+        {
+          if (selected1x<5 && selected1y!=0)
+            selected1x++;
+        }
+        else if (menu == 0)
+          right=true;
+      }
+      
+      if (s=="q")
+      {
+        if (menu>0)
+        {
+          menu=0;
+          buryx=0;
+        }
+        else
+        {
+          right=false;
+          left=false;
+          up=false;
+          down=false;
+          menu=1;
+          if (box.x%64<32)
+          {
+            if (box.y%64<32)
+              checkNearbyHoles(0, 0);
+            else
+              checkNearbyHoles(0, 1);
+          }
+          else if (box.y%64<32)
+            checkNearbyHoles(1, 0);
+          else
+            checkNearbyHoles(1, 1);
+        }
+      }
+      
+      if (s=="w")
+      {
+        for(int a=0; a<60; a++)
+        {
+          for (int b=0; b<40; b++)
+          {
+            if (Crossing.grid[a][b] instanceof Plants)
+            {
+              if (Crossing.grid[a][b].state==0)
+                Crossing.grid[a][b].update();
+            }
           }
         }
       }
-    }
-    
-    if (s=="e")
-      System.out.println(box.x + " " + box.y);
+      
+      if (s=="e")
+        System.out.println(box.x + " " + box.y);
       //System.out.println("Run function hotkey(e)");
-    
-    if (s=="r")
-      System.out.println("Run function hotkey(r)");
+      
+      if (s=="r")
+        System.out.println("Run function hotkey(r)");
+    }
   }
   
   private void checkNearbyHoles(int k, int l)
@@ -213,18 +220,18 @@ public class Player
               if (Crossing.inventory[f][s]==null)
               {
                 Crossing.inventory[f][s]=Crossing.caught;
-                Crossing.fish[Crossing.bobber.box.x][Crossing.bobber.box.y].remove(Crossing.caught);
+                Crossing.fish[Crossing.caught.box.x/64][Crossing.caught.box.y/64].remove(Crossing.caught);
                 Crossing.caught=null;
                 throw new Exception();
               }
               else if (f==5 && s==3)
               {
                 System.out.println("Inventory is full!");
-                throw new Exception();
               }
             }
           }
         }
+        throw new Exception();
       }
       switch(menu)
       {
@@ -486,18 +493,22 @@ public class Player
       if (x==0)
       {
         Crossing.bobber.box.x=box.x+24;
-        Crossing.bobber.box.y=box.x+y*192;
+        Crossing.bobber.box.y=box.y+y*192;
       }
       else
       {
         Crossing.bobber.box.x=box.x+x*192;
-        Crossing.bobber.box.y=box.x+24;
+        Crossing.bobber.box.y=box.y+24;
       }
       for (Rectangle d:Crossing.water)
       {
         if (Crossing.bobber.box.intersects(d))
         {
           fishing=true;
+          right=false;
+          left=false;
+          up=false;
+          down=false;
           throw new Exception();
         }
       }
@@ -582,9 +593,13 @@ public class Player
   
   private void hold()
   {
-    Crossing.inventory[selected1x][selected1y].state=1;
-    menu=0;
-    selected2=0;
+//    Crossing.inventory[selected1x][selected1y].state=1;
+//    menu=0;
+//    selected2=0;
+    heldx=selected1x;
+    heldy=selected1y;
+    held=true;
+    menu=1;
   }
   
   private boolean worldCollision(Rectangle c, boolean playerMoving)
@@ -613,6 +628,11 @@ public class Player
       }
     }
     for (Rectangle x:Crossing.worldWalls)
+    {
+      if (x.intersects(c))
+        return false;
+    }
+    for (Rectangle x:Crossing.water)
     {
       if (x.intersects(c))
         return false;

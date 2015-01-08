@@ -8,6 +8,16 @@ import java.util.ArrayList;
  * Once you have finished reading this, read Graphix, Entity and then Bugs. Everything else is the same as bugs except with different methods.
  */
 
+
+//fix fish animation bug
+//check out flying bugs
+//make new methods for the different types of bugs / fish
+//make a system to use the different methods
+//create the spawning method
+//make an instanced room
+//make a shop keeper
+//make a save and quit game object
+//make a text reader for saving
 public class Crossing
 {
   static final int PLAYERLOCATION=368;
@@ -40,7 +50,7 @@ public class Crossing
     inventory[5][2]=new Plants("plant", true);
     fish[14][13].add(new Fish("fish", 14, 13, 0));
     bugs[11][11].add(new Bugs("bug", 11, 11, 0));
-    villagers[13][12].add(new Villagers("villager", 13, 12));
+    villagers[11][11].add(new Villagers("villager", 11, 11));
     bugs[12][12].add(new Bugs("bug", 12, 12, 0));
     grid[13][13]=new Hole();
     worldUpdate();

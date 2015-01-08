@@ -50,16 +50,20 @@ public class Villagers extends Entity
     else
     {
       Crossing.villagers[box.x/64][box.y/64].remove(this);
-      box.x= (int)(box.x+Math.cos(angle));
-      box.y= (int)(box.y+Math.sin(angle));
-      if (maxLoops==0 || collision())
+      box.x= box.x+(int)(3*Math.cos(angle));
+      box.y= box.y+(int)(3*Math.sin(angle)); 
+      if(collision())
       {
-        box.x= (int)(box.x-Math.cos(angle));
-        box.y= (int)(box.y-Math.sin(angle));
+        box.x= box.x-(int)(3*Math.cos(angle));
+        box.y= box.y-(int)(3*Math.sin(angle));
+        angle=angle+Math.PI;
+      }
+      if (maxLoops==0)
+      {
         Crossing.villagers[box.x/64][box.y/64].add(this);
         waitCount=(int)(Math.random()*10);
-        maxLoops=(int)(Math.random()*40);
-        angle = angle+Math.PI/4+Math.random()*(Math.PI/2);
+        maxLoops=(int)(Math.random()*40+20);
+        angle = Math.random()*Math.PI*2;
         animation=1;
       }
       else
@@ -82,6 +86,11 @@ public class Villagers extends Entity
     if (Crossing.grid[box.x/64][box.y/64] instanceof Hole||  Crossing.grid[box.x/64+1][box.y/64] instanceof Hole|| Crossing.grid[box.x/64][box.y/64+1] instanceof Hole|| Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
       return true;
     for (Rectangle x:Crossing.worldWalls)
+    {
+      if (x.intersects(box))
+        return true;
+    }
+    for (Rectangle x:Crossing.water)
     {
       if (x.intersects(box))
         return true;

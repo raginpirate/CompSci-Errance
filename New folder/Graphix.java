@@ -9,6 +9,7 @@ import java.awt.Color;
 import javax.imageio.*;
 import java.io.File;
 import java.awt.image.BufferedImage;
+import java.awt.Rectangle;
 //This class represents the graphical and physical components for the Jframe, which does drawing of the images and creation of the key and action maps
 public class Graphix extends JPanel
 {
@@ -173,8 +174,16 @@ public class Graphix extends JPanel
     Graphics2D g2d = (Graphics2D) g;
     super.paintComponent(g);
     g2d.drawImage(back, (int)(Crossing.PLAYERLOCATION-Crossing.player.box.x), (int)(Crossing.PLAYERLOCATION-Crossing.player.box.y), this);
+    g2d.setColor(Color.black);
+    for (Rectangle x:Crossing.worldWalls)
+    {
+      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
+    }
     g2d.setColor(Color.blue);
-    g2d.drawRect(Crossing.water[0].x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.water[0].y-Crossing.player.box.y+Crossing.PLAYERLOCATION, Crossing.water[0].width, Crossing.water[0].height);
+    for (Rectangle x:Crossing.water)
+    {
+      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
+    }
     Crossing.bobber.paint(g);
     g2d.setColor(Color.orange);
     g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);

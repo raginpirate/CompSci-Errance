@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 public class Bugs extends Entity
 {
+  //All of these varraibles are important, just some are not implemented yet. Do not delete any, please!
   private double angle=2;
   private int count=0;
   private int animation=0;

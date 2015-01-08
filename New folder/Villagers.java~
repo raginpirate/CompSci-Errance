@@ -75,7 +75,7 @@ public class Villagers extends Entity
     }
   }
   
-  public boolean collision()
+  private boolean collision()
   {
     if (box.intersects(Crossing.player.box))
       return true;

@@ -145,6 +145,14 @@ public class Bugs extends Entity
         return true;
       }
     }
+    for (Rectangle x:Crossing.water)
+    {
+      if (x.intersects(box))
+      {
+        collided=true;
+        return true;
+      }
+    }
     return false;
   }
   

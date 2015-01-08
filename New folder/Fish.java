@@ -19,6 +19,7 @@ public class Fish extends Entity
   private BufferedImage ani4;
   private BufferedImage ani5;
   private int boundary;
+  private int biteTimer=-1;
   private boolean collided=false;
   private Rectangle bobberRectangle=new Rectangle(10000,10000,0,0);
   
@@ -41,10 +42,69 @@ public class Fish extends Entity
   {
     if (nibbleAI)
     {
-      System.out.println("nibble!");
+      Crossing.fish[box.x/64][box.y/64].remove(this);
+      if (biteTimer==-1)
+      {
+        if (animation==4)
+          aniAdd=-1;
+        else if (animation==0)
+          aniAdd=1;
+        animation=animation+aniAdd;
+        box.x= box.x+(int)(accelleration*Math.cos(angle));
+        box.y= box.y+(int)(accelleration*Math.sin(angle));
+        if(accelleration>0)
+          accelleration--;
+        else
+          accelleration++;
+        if (Crossing.bobber.box.intersects(box))
+        {
+          accelleration=-15;
+          box.x= box.x+(int)(accelleration*Math.cos(angle));
+          box.y= box.y+(int)(accelleration*Math.sin(angle));
+          if (Math.random()<0.2)
+          {
+            Crossing.caught=this;
+            biteTimer=(int)(Math.random()*10)+5;
+          }
+        }
+        else if (collision() || accelleration==0)
+          accelleration=15;
+      }
+      else
+      {
+        biteTimer--;
+        System.out.println(biteTimer);
+        if (animation==4)
+          aniAdd=-1;
+        else if (animation==0)
+          aniAdd=1;
+        animation=animation+aniAdd;
+      }
+      if (Crossing.bobber.box.x!=0 && biteTimer!=0)
+        Crossing.fish[box.x/64][box.y/64].add(this);
     }
     else if (Crossing.bobber.box.intersects(bobberRectangle))
+    {
+      if (Crossing.bobber.box.x-8-(box.x+32)>0 && Crossing.bobber.box.y-8.0-(box.y+32) !=0)
+        angle=Math.atan((Crossing.bobber.box.y-8-(box.y+32))/(Crossing.bobber.box.x-8.0-(box.x+32)));
+      else if (Crossing.bobber.box.x-8-(box.x+32)==0)
+      {
+        if (Crossing.bobber.box.y-8-(box.y+32)>0)
+          angle=Math.PI/2;
+        else
+          angle=-Math.PI/2;
+      }
+      else if (Crossing.bobber.box.y-8.0-(box.y+32)>0)
+        angle=Math.atan(Math.abs((Crossing.bobber.box.y-8-(box.y+32))/(Crossing.bobber.box.x-8.0-(box.x+32))))+Math.PI/2;
+      else if (Crossing.bobber.box.y-(box.y+32)<0)
+        angle=Math.atan(Math.abs((Crossing.bobber.box.y-8-(box.y+32))/(Crossing.bobber.box.x-8.0-(box.x+32))))+Math.PI;
+      else if (Crossing.bobber.box.x-8.0-(box.x+32)>0)
+        angle=0;
+      else
+        angle=Math.PI;
       nibbleAI=true;
+      accelleration = 15;
+    }
     else
     {
       if (waitCount>0)
@@ -58,15 +118,7 @@ public class Fish extends Entity
       }
       else if (waitCount==0)
       {
-        if (collided)
-        {
-          angle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
-          if (angle<0)
-            angle = angle+Math.PI*2;
-          collided=false;
-        }
-        else
-          angle = Math.random()*Math.PI*2;
+        angle = Math.random()*Math.PI*2;
         rotation = Math.PI*2 - angle;
         if (rotation>=Math.PI)
           rotation = rotation-Math.PI*2;
@@ -81,11 +133,12 @@ public class Fish extends Entity
         box.y= box.y+(int)(accelleration*Math.sin(angle));
         if (collision())
         {
-          collided=true;
           box.x= box.x-(int)(accelleration*Math.cos(angle));
           box.y= box.y-(int)(accelleration*Math.sin(angle));
+          angle=angle+Math.PI;
+          rotation=rotation-Math.PI;
+          accelleration++;
           Crossing.fish[box.x/64][box.y/64].add(this);
-          accelleration=0;
         }
         else
           Crossing.fish[box.x/64][box.y/64].add(this);
@@ -116,21 +169,21 @@ public class Fish extends Entity
               aniAdd=1;
             animation=animation+aniAdd;
           }
-          if (angle<Math.PI/2)
+          if (angle<Math.PI/4 || angle>Math.PI*7/4)
           {
             bobberRectangle.x=box.x+64;
             bobberRectangle.y=box.y-128;
             bobberRectangle.width=128;
             bobberRectangle.height=320;
           }
-          else if (angle<Math.PI)
+          else if (angle<Math.PI*3/4)
           {
             bobberRectangle.x=box.x-128;
             bobberRectangle.y=box.y+64;
             bobberRectangle.width=320;
             bobberRectangle.height=128;
           }
-          else if (angle<Math.PI*3/2)
+          else if (angle<Math.PI*5/4)
           {
             bobberRectangle.x=box.x-128;
             bobberRectangle.y=box.y-128;
@@ -187,7 +240,6 @@ public class Fish extends Entity
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;
-    g2d.drawRect(bobberRectangle.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, bobberRectangle.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, bobberRectangle.width, bobberRectangle.height);
     AffineTransform rotate = AffineTransform.getRotateInstance(angle+Math.PI/2, image.getWidth()/2, image.getHeight()/2);
     AffineTransformOp translate = new AffineTransformOp(rotate, AffineTransformOp.TYPE_BILINEAR);
     if (state==0)

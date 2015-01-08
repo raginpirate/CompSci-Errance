@@ -5,6 +5,8 @@ public class Items extends Entity
   public Items()
   {
     image = Graphix.buffer("bobber.jpg");
+    box.width=16;
+    box.height=16;
   }
   public void update(){}
   public void paint(Graphics g)
