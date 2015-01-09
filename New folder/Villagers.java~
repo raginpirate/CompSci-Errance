@@ -4,6 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+//DONE
 public class Villagers extends Entity
 {
   private double angle=2;
@@ -50,16 +51,20 @@ public class Villagers extends Entity
     else
     {
       Crossing.villagers[box.x/64][box.y/64].remove(this);
-      box.x= (int)(box.x+Math.cos(angle));
-      box.y= (int)(box.y+Math.sin(angle));
-      if (maxLoops==0 || collision())
+      box.x= box.x+(int)(3*Math.cos(angle));
+      box.y= box.y+(int)(3*Math.sin(angle)); 
+      if(collision())
       {
-        box.x= (int)(box.x-Math.cos(angle));
-        box.y= (int)(box.y-Math.sin(angle));
+        box.x= box.x-(int)(3*Math.cos(angle));
+        box.y= box.y-(int)(3*Math.sin(angle));
+        angle=angle+Math.PI;
+      }
+      if (maxLoops==0)
+      {
         Crossing.villagers[box.x/64][box.y/64].add(this);
         waitCount=(int)(Math.random()*10);
-        maxLoops=(int)(Math.random()*40);
-        angle = angle+Math.PI/4+Math.random()*(Math.PI/2);
+        maxLoops=(int)(Math.random()*40+20);
+        angle = Math.random()*Math.PI*2;
         animation=1;
       }
       else
@@ -86,6 +91,11 @@ public class Villagers extends Entity
       if (x.intersects(box))
         return true;
     }
+    for (Rectangle x:Crossing.water)
+    {
+      if (x.intersects(box))
+        return true;
+    }
     for (int a=-1; a<2; a++)
     {
       for (int b=-1; b<2; b++)
@@ -104,6 +114,10 @@ public class Villagers extends Entity
   {
     System.out.println("The villager ignores you!");
     return true;
+  }
+  public void water()
+  {
+    
   }
   
   public void paint(Graphics g)

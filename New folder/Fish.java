@@ -27,11 +27,11 @@ public class Fish extends Entity
   {
     eat=false;
     image = Graphix.buffer(s + ".jpg");
-    ani1 = Graphix.buffer(s + "1.jpg");
-    ani2 = Graphix.buffer(s + "2.jpg");
-    ani3 = Graphix.buffer(s + "3.jpg");
-    ani4 = Graphix.buffer(s + "4.jpg");
-    ani5 = Graphix.buffer(s + "5.jpg");
+    ani1 = Graphix.buffer("fish1.jpg");
+    ani2 = Graphix.buffer("fish2.jpg");
+    ani3 = Graphix.buffer("fish3.jpg");
+    ani4 = Graphix.buffer("fish4.jpg");
+    ani5 = Graphix.buffer("fish5.jpg");
     box.x=64*a;
     box.y=64*b;
     this.boundary=boundary;
@@ -42,14 +42,14 @@ public class Fish extends Entity
   {
     if (nibbleAI)
     {
+      if (animation==4)
+        aniAdd=-1;
+      else if (animation==0)
+        aniAdd=1;
+      animation=animation+aniAdd;
       Crossing.fish[box.x/64][box.y/64].remove(this);
       if (biteTimer==-1)
       {
-        if (animation==4)
-          aniAdd=-1;
-        else if (animation==0)
-          aniAdd=1;
-        animation=animation+aniAdd;
         box.x= box.x+(int)(accelleration*Math.cos(angle));
         box.y= box.y+(int)(accelleration*Math.sin(angle));
         if(accelleration>0)
@@ -61,7 +61,7 @@ public class Fish extends Entity
           accelleration=-15;
           box.x= box.x+(int)(accelleration*Math.cos(angle));
           box.y= box.y+(int)(accelleration*Math.sin(angle));
-          if (Math.random()<0.2)
+          if (Math.random()<0.4)
           {
             Crossing.caught=this;
             biteTimer=(int)(Math.random()*10)+5;
@@ -74,14 +74,11 @@ public class Fish extends Entity
       {
         biteTimer--;
         System.out.println(biteTimer);
-        if (animation==4)
-          aniAdd=-1;
-        else if (animation==0)
-          aniAdd=1;
-        animation=animation+aniAdd;
       }
       if (Crossing.bobber.box.x!=0 && biteTimer!=0)
         Crossing.fish[box.x/64][box.y/64].add(this);
+      else
+        Crossing.spawn(3);
     }
     else if (Crossing.bobber.box.intersects(bobberRectangle))
     {
@@ -235,6 +232,11 @@ public class Fish extends Entity
       }
     }
     return true;
+  }
+  
+  public void water()
+  {
+    
   }
   
   public void paint(Graphics g)

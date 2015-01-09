@@ -34,4 +34,8 @@ public class Items extends Entity
     }
     return true;
   }
+  public void water()
+  {
+    
+  }
 }

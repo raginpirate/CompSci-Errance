@@ -14,6 +14,9 @@ public class FlyingBugs extends Entity
   private int animation=0;
   private int counter=0;
   private int aniAdd=1;
+  private int waitCount=0;
+  private int count=0;
+  private int aiValue;
   
   public FlyingBugs(String s, int a, int b, int boundary)
   {
@@ -26,34 +29,111 @@ public class FlyingBugs extends Entity
     box.x=a*64;
     box.y=b*64;
     state=2;
+    if (s=="butterfly")
+      aiValue=1;
+    if (s=="dragonfly")
+      aiValue=2;
+    if (s=="fly")
+      aiValue=3;
   }
+  
   public void update()
   {
-    Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
-    box.x= box.x+(int)(3*Math.cos(angle));
-    box.y= box.y+(int)(3*Math.sin(angle));
-    if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+    switch(aiValue)
     {
-      box.x= box.x-(int)(3*Math.cos(angle));
-      box.y= box.y-(int)(3*Math.sin(angle));
-      Crossing.flyingBugs[box.x/64][box.y/64].add(this);
-      maxLoops=(int)(Math.random()*160)+80;
-      angle = Math.random()*Math.PI*2;
-    }
-    else
-    {
-      Crossing.flyingBugs[box.x/64][box.y/64].add(this);
-      maxLoops--;
-      counter++;
-      if (counter==8)
+      case 1:Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
+      box.x= box.x+(int)(3*Math.cos(angle));
+      box.y= box.y+(int)(3*Math.sin(angle));
+      if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
       {
-        counter=0;
+        box.x= box.x-(int)(3*Math.cos(angle));
+        box.y= box.y-(int)(3*Math.sin(angle));
+        Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+        maxLoops=(int)(Math.random()*160)+80;
+        angle = Math.random()*Math.PI*2;
+      }
+      else
+      {
+        Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+        maxLoops--;
+        counter++;
+        if (counter==8)
+        {
+          counter=0;
+          if (animation==2)
+            aniAdd=-1;
+          else if (animation==0)
+            aniAdd=1;
+          animation=animation+aniAdd;
+        }
+      }
+      break;
+      case 2:if (animation==2)
+        aniAdd=-1;
+      else if (animation==0)
+        aniAdd=1;
+      animation=animation+aniAdd;
+      if (waitCount>0)
+      {
+        waitCount--;
+        if (waitCount>38)
+        {
+          Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
+          box.x= box.x-(int)(5*Math.cos(angle));
+          box.y= box.y-(int)(5*Math.sin(angle));
+          Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+        }
+      }
+      else if (waitCount==0)
+      {
+        maxLoops=(int)(Math.random()*5)+5;
+        angle = Math.random()*Math.PI*2;
+        waitCount--;
+      }
+      else
+      {
+        Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
+        box.x= box.x+(int)(30*Math.cos(angle));
+        box.y= box.y+(int)(30*Math.sin(angle));
+        if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+        {
+          box.x= box.x-(int)(30*Math.cos(angle));
+          box.y= box.y-(int)(30*Math.sin(angle));
+          Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+          waitCount=40;
+        }
+        else
+        {
+          Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+          maxLoops--;
+          counter++;
+        }
+      }
+      break;
+      case 3:Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
+      count=count+1;
+      box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
+      box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
+      if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+      {
+        box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
+        box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
+        Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+        maxLoops=(int)(Math.random()*20);
+        angle = Math.random()*Math.PI*2;
+        count=0;
+      }
+      else
+      {
+        Crossing.flyingBugs[box.x/64][box.y/64].add(this);
+        maxLoops--;
         if (animation==2)
           aniAdd=-1;
         else if (animation==0)
           aniAdd=1;
         animation=animation+aniAdd;
       }
+      break;
     }
   }
   
@@ -81,6 +161,8 @@ public class FlyingBugs extends Entity
     }
     return true;
   }
+  
+  public void water(){}
   
   public void paint(Graphics g)
   {

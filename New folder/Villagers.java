@@ -114,6 +114,10 @@ public class Villagers extends Entity
     System.out.println("The villager ignores you!");
     return true;
   }
+  public void water()
+  {
+    
+  }
   
   public void paint(Graphics g)
   {

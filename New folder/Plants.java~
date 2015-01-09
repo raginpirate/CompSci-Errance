@@ -17,6 +17,12 @@ public class Plants extends Entity
   public Plants(String s, boolean fruit)
   {
     this.s=s;
+    if (s=="strawberry")
+      lootable=true;
+    else if (s=="carrot")
+      lootable=false;
+    else if (s=="turnip")
+      lootable=true;
     if (fruit)
     {
       image = Graphix.buffer(s + "f.jpg");
@@ -67,7 +73,7 @@ public class Plants extends Entity
   {
     if (state==1)
     {
-      for (int f=0; f<6; f++)
+      loop: for (int f=0; f<6; f++)
         {
           for (int k=1; k<4; k++)
           {
@@ -75,8 +81,7 @@ public class Plants extends Entity
             {
               Crossing.inventory[f][k]=this;
               Crossing.grid[box.x/64][box.y/64]=null;
-              f=7;
-              break;
+              break loop;
             }
             else if (f==5 && k==3){}
             //Drops to the grid
@@ -90,15 +95,14 @@ public class Plants extends Entity
       {
         stage=1;
         growCount=(int)(Math.random()*2+1);
-        for (int f=0; f<6; f++)
+        loop: for (int f=0; f<6; f++)
         {
           for (int k=1; k<4; k++)
           {
             if (Crossing.inventory[f][k]==null)
             {
               Crossing.inventory[f][k]=new Plants(s, true);
-              f=7;
-              break;
+              break loop;
             }
             else if (f==5 && k==3){}
             //Drops to the grid
@@ -109,7 +113,7 @@ public class Plants extends Entity
       stage=0;
       water=50;
       growCount=(int)(Math.random()*2+1);
-      for (int f=0; f<6; f++)
+      loop: for (int f=0; f<6; f++)
       {
         for (int k=1; k<4; k++)
         {
@@ -117,8 +121,7 @@ public class Plants extends Entity
           {
             Crossing.inventory[f][k]=this;
             Crossing.grid[box.x/64][box.y/64]=null;
-            f=7;
-            break;
+            break loop;
           }
           else if (f==5 && k==3)
           {

@@ -34,110 +34,124 @@ public class Bugs extends Entity
     state=2;
   }
   
-//  public void update()
-//  {
-//    Crossing.bugs[box.x/64][box.y/64].remove(this);
-//    count=count+1;
-//    box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
-//    box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-//    if (maxLoops==0 || collision())
-//    {
-//      box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
-//      box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-//      Crossing.bugs[box.x/64][box.y/64].add(this);
-//      maxLoops=(int)(Math.random()*20);
-//      if (collided)
-//      {
-//        angle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
-//        if (angle<0)
-//          angle = angle+Math.PI*2;
-//        collided=false;
-//      }
-//      else
-//        angle = Math.random()*Math.PI*2;
-//      count=0;
-//    }
-//    else
-//    {
-//      Crossing.bugs[box.x/64][box.y/64].add(this);
-//      maxLoops--;
-//      if (animation==2)
-//        aniAdd=-1;
-//      else if (animation==0)
-//        aniAdd=1;
-//      animation=animation+aniAdd;
-//    }
-//  }
-  
   public void update()
   {
-    if (waitCount>10)
+    Crossing.bugs[box.x/64][box.y/64].remove(this);
+    count=count+1;
+    box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
+    box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
+    if (maxLoops==0 || collision())
     {
-      waitCount--;
-    }
-    else if (waitCount>0)
-    {
-      waitCount--;
-      angle=angle+rotation;
+      box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
+      box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
+      Crossing.bugs[box.x/64][box.y/64].add(this);
+      maxLoops=(int)(Math.random()*20);
+      if (collided)
+      {
+        angle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
+        if (angle<0)
+          angle = angle+Math.PI*2;
+        collided=false;
+      }
+      else
+        angle = Math.random()*Math.PI*2;
+      count=0;
     }
     else
     {
-      count=count-2;
-      Crossing.bugs[box.x/64][box.y/64].remove(this);
-      if (collided)
-      {
-        box.x= (int)(box.x+10*Math.cos(angle));
-        box.y= (int)(box.y+10*Math.sin(angle));
-        if (collision())
-        {
-          collided=false;
-          box.x= (int)(box.x-10*Math.cos(angle));
-          box.y= (int)(box.y-10*Math.sin(angle));
-        }
-      }
-      box.y=box.y-count;
       Crossing.bugs[box.x/64][box.y/64].add(this);
-      if (animation!=2)
-        animation=2;
-      else
-        animation=1;
-      if (count==-8)
-      {
-        animation=0;
-        count=10;
-        waitCount=(int)(Math.random()*20)+10;
-        angle=newAngle;
-        if (collided==false)
-        {
-          newAngle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
-          if (newAngle<0)
-            newAngle = newAngle+Math.PI*2;
-          collided=true;
-        }
-        else
-          newAngle = Math.random()*Math.PI*2;
-        rotation = newAngle-angle;
-        if (Math.abs(rotation)>Math.PI)
-        {
-          if (rotation>0)
-            rotation=(rotation-Math.PI*2)/10;
-          else
-            rotation=(rotation+Math.PI*2)/10;
-        }
-        else
-          rotation=rotation/10;
-      }
+      maxLoops--;
+      if (animation==2)
+        aniAdd=-1;
+      else if (animation==0)
+        aniAdd=1;
+      animation=animation+aniAdd;
     }
   }
   
+//  public void update()
+//  {
+//    if (waitCount>10)
+//    {
+//      waitCount--;
+//    }
+//    else if (waitCount>0)
+//    {
+//      waitCount--;
+//      angle=angle+rotation;
+//    }
+//    else
+//    {
+//      count=count-2;
+//      Crossing.bugs[box.x/64][box.y/64].remove(this);
+//      if (collided)
+//      {
+//        box.x= (int)(box.x+10*Math.cos(angle));
+//        box.y= (int)(box.y+10*Math.sin(angle));
+//        if (collision())
+//        {
+//          collided=false;
+//          box.x= (int)(box.x-10*Math.cos(angle));
+//          box.y= (int)(box.y-10*Math.sin(angle));
+//        }
+//      }
+//      box.y=box.y-count;
+//      Crossing.bugs[box.x/64][box.y/64].add(this);
+//      if (animation!=2)
+//        animation=2;
+//      else
+//        animation=1;
+//      if (count==-8)
+//      {
+//        animation=0;
+//        count=10;
+//        waitCount=(int)(Math.random()*20)+10;
+//        angle=newAngle;
+//        if (collided==false)
+//        {
+//          newAngle = Math.random()*Math.PI/2+angle-5*Math.PI/4;
+//          if (newAngle<0)
+//            newAngle = newAngle+Math.PI*2;
+//          collided=true;
+//        }
+//        else
+//          newAngle = Math.random()*Math.PI*2;
+//        rotation = newAngle-angle;
+//        if (Math.abs(rotation)>Math.PI)
+//        {
+//          if (rotation>0)
+//            rotation=(rotation-Math.PI*2)/10;
+//          else
+//            rotation=(rotation+Math.PI*2)/10;
+//        }
+//        else
+//          rotation=rotation/10;
+//      }
+//    }
+//  }
+  
+//  public void update()
+//  {
+//    if (box.intersects(Crossing.player.box))
+//      Crossing.bugs[box.x/64][box.y/64].remove(this);
+//  }
+  
   public boolean collision()
   {
-    if (!(Crossing.npcBoundaries[boundary].intersects(box)) || Crossing.grid[box.x/64][box.y/64] instanceof Hole ||  Crossing.grid[box.x/64+1][box.y/64] instanceof Hole || Crossing.grid[box.x/64][box.y/64+1] instanceof Hole || Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
+    if (Crossing.grid[box.x/64][box.y/64] instanceof Hole ||  Crossing.grid[box.x/64+1][box.y/64] instanceof Hole || Crossing.grid[box.x/64][box.y/64+1] instanceof Hole || Crossing.grid[box.x/64+1][box.y/64+1] instanceof Hole)
     {
       collided=true;
       return true;
     }
     for (Rectangle x:Crossing.worldWalls)
+    {
+      if (x.intersects(box))
+      {
+        collided=true;
+        return true;
+      }
+    }
+    for (Rectangle x:Crossing.water)
     {
       if (x.intersects(box))
       {
@@ -173,12 +187,10 @@ public class Bugs extends Entity
     return true;
   }
   
-  public void steppedOn()
+  public void water()
   {
-    Crossing.bugs[box.x/64][box.y/64].remove(this);
-    System.out.println("You stepped on a bug!");
+    
   }
-  
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;

@@ -26,35 +26,35 @@ public class Player
     if (up)
     {
       if (right)
-        moveHelper(4, -4);
+        moveHelper(20, -20);
       else if (left)
-        moveHelper(-4, -4);
+        moveHelper(-20, -20);
       else
-        moveHelper(0, -6);
+        moveHelper(0, -30);
     }
     else if (down)
     {
       if (right)
-        moveHelper(4, 4);
+        moveHelper(20, 20);
       else if (left)
-        moveHelper(-4, 4);
+        moveHelper(-20, 20);
       else
-        moveHelper(0, 6);
+        moveHelper(0, 30);
     }
     else if (left)
-      moveHelper(-6, 0);
+      moveHelper(-30, 0);
     else if (right)
-      moveHelper(6, 0);
+      moveHelper(30, 0);
   }
   
   private void moveHelper(int k, int l)
   {
     box.x=box.x+k;
-    if (!(worldCollision(box, true)))
-      box.x=box.x-k;
+    //if (!(worldCollision(box, true)))
+      //box.x=box.x-k;
     box.y=box.y+l;
-    if (!(worldCollision(box, true)))
-      box.y=box.y-l;
+    //if (!(worldCollision(box, true)))
+     // box.y=box.y-l;
   }
   
   public void input(String s)
@@ -222,6 +222,7 @@ public class Player
                 Crossing.inventory[f][s]=Crossing.caught;
                 Crossing.fish[Crossing.caught.box.x/64][Crossing.caught.box.y/64].remove(Crossing.caught);
                 Crossing.caught=null;
+                Crossing.spawn(3);
                 throw new Exception();
               }
               else if (f==5 && s==3)
@@ -473,6 +474,31 @@ public class Player
                   {
                     Crossing.inventory[f][s]=Crossing.bugs[temp.x/64+a][temp.y/64+b].get(d);
                     Crossing.bugs[temp.x/64+a][temp.y/64+b].remove(d);
+                    Crossing.spawn(2);
+                    throw new Exception();
+                  }
+                  else if (f==5 && s==3)
+                  {
+                    System.out.println("Inventory is full!");
+                    throw new Exception();
+                  }
+                }
+              }
+            }
+          }
+          for (int d=0; d<Crossing.flyingBugs[temp.x/64+a][temp.y/64+b].size(); d++)
+          {
+            if (Crossing.flyingBugs[temp.x/64+a][temp.y/64+b].get(d).box.intersects(temp))
+            {
+              for (int f=0; f<6; f++)
+              {
+                for (int s=1; s<4; s++)
+                {
+                  if (Crossing.inventory[f][s]==null)
+                  {
+                    Crossing.inventory[f][s]=Crossing.flyingBugs[temp.x/64+a][temp.y/64+b].get(d);
+                    Crossing.flyingBugs[temp.x/64+a][temp.y/64+b].remove(d);
+                    Crossing.spawn(1);
                     throw new Exception();
                   }
                   else if (f==5 && s==3)
@@ -517,7 +543,9 @@ public class Player
       throw new Exception();
     }//catch fish
     if (Crossing.inventory[0][0].equipment==4)
-    {}//water
+    {
+      useWater(x, y);
+    }//water
     if (Crossing.inventory[0][0].equipment==5)
     {}//axe
   }
@@ -602,6 +630,19 @@ public class Player
     menu=1;
   }
   
+  private void useWater(int x, int y) throws Exception
+  {
+    if (Crossing.grid[box.x/64+x][box.y/64+y] instanceof Plants)
+          Crossing.grid[box.x/64+x][box.y/64+y].water();
+    if (Crossing.grid[box.x/64+x+1][box.y/64+y] instanceof Plants)
+          Crossing.grid[box.x/64+x+1][box.y/64+y].water();
+    if (Crossing.grid[box.x/64+x][box.y/64+y+1] instanceof Plants)
+          Crossing.grid[box.x/64+x][box.y/64+y+1].water();
+    if (Crossing.grid[box.x/64+x+1][box.y/64+y+1] instanceof Plants)
+          Crossing.grid[box.x/64+x+1][box.y/64+y+1].water();
+    throw new Exception();
+  }
+  
   private boolean worldCollision(Rectangle c, boolean playerMoving)
   {
     if (Crossing.grid[box.x/64][box.y/64] instanceof Hole ||  Crossing.grid[(box.x+63)/64][box.y/64] instanceof Hole || Crossing.grid[box.x/64][(box.y+63)/64] instanceof Hole || Crossing.grid[(box.x+63)/64][(box.y+63)/64] instanceof Hole)
@@ -614,9 +655,7 @@ public class Player
         {
           if (Crossing.bugs[c.x/64+a][c.y/64+b].get(d).box.intersects(c))
           {
-            if (playerMoving)
-              Crossing.bugs[c.x/64+a][c.y/64+b].get(d).steppedOn();
-            else
+            if (!playerMoving)
               return false;
           }
         }

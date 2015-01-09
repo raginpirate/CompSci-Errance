@@ -17,6 +17,12 @@ public class Plants extends Entity
   public Plants(String s, boolean fruit)
   {
     this.s=s;
+    if (s=="strawberry")
+      lootable=true;
+    else if (s=="carrot")
+      lootable=false;
+    else if (s=="turnip")
+      lootable=false;
     if (fruit)
     {
       image = Graphix.buffer(s + "f.jpg");

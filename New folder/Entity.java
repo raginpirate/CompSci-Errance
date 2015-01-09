@@ -13,4 +13,5 @@ abstract class Entity
   abstract void update();
   abstract boolean interact();
   abstract void paint(Graphics g);
+  abstract void water();
 }

@@ -11,6 +11,10 @@ public class Hole extends Entity
   {
     
   }
+  public void water()
+  {
+    
+  }
   public boolean interact()
   {
     return false;
