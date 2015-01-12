@@ -4,6 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.awt.Polygon;
 public class Bugs extends Entity
 {
   private double angle=2;
@@ -31,11 +32,12 @@ public class Bugs extends Entity
     box.x=a*64;
     box.y=b*64;
     state=2;
-    if (s=="beetle")
+    this.s=s;
+    if (s.equals("beetle"))
       aiValue=1;
-    if (s=="grasshopper")
+    if (s.equals("grasshopper"))
       aiValue=2;
-    if (s=="ladybug")
+    if (s.equals("ladybug"))
       aiValue=3;
   }
   
@@ -161,7 +163,7 @@ public class Bugs extends Entity
         return true;
       }
     }
-    for (Rectangle x:Crossing.water)
+    for (Polygon x:Crossing.water)
     {
       if (x.intersects(box))
       {
@@ -197,10 +199,6 @@ public class Bugs extends Entity
     return true;
   }
   
-  public void water()
-  {
-    
-  }
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;

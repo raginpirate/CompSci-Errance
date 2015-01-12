@@ -4,6 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.awt.Polygon;
 public class Fish extends Entity
 {
   private boolean nibbleAI;
@@ -23,9 +24,10 @@ public class Fish extends Entity
   private boolean collided=false;
   private Rectangle bobberRectangle=new Rectangle(10000,10000,0,0);
   
-  public Fish(String s, int a, int b, int boundary)
+  public Fish(String s, int a, int b)
   {
     eat=false;
+    this.s=s;
     image = Graphix.buffer(s + ".jpg");
     ani1 = Graphix.buffer("fish1.jpg");
     ani2 = Graphix.buffer("fish2.jpg");
@@ -34,7 +36,6 @@ public class Fish extends Entity
     ani5 = Graphix.buffer("fish5.jpg");
     box.x=64*a;
     box.y=64*b;
-    this.boundary=boundary;
     state=2;
   }
   
@@ -203,7 +204,7 @@ public class Fish extends Entity
   {
     if (!(Crossing.npcBoundaries[boundary].intersects(box)))
       return true;
-    for (Rectangle x:Crossing.water)
+    for (Polygon x:Crossing.water)
     {
       if (x.intersects(box))
         return false;
@@ -233,12 +234,7 @@ public class Fish extends Entity
     }
     return true;
   }
-  
-  public void water()
-  {
-    
-  }
-  
+
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;

@@ -10,11 +10,13 @@ import javax.imageio.*;
 import java.io.File;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.awt.Polygon;
 //This class represents the graphical and physical components for the Jframe, which does drawing of the images and creation of the key and action maps
 public class Graphix extends JPanel
 {
-  static BufferedImage wall = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage hole = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage back = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage door = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage inventory = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menu2 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menu3 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
@@ -35,7 +37,7 @@ public class Graphix extends JPanel
     };
     Action down = new AbstractAction()
     {
-      public void actionPerformed(ActionEvent e) 
+      public void actionPerformed(ActionEvent e)
       {
         Crossing.player.input("down");
       }
@@ -80,6 +82,13 @@ public class Graphix extends JPanel
       public void actionPerformed(ActionEvent e) 
       {
         Crossing.player.release("right");
+      }
+    };
+    Action rR = new AbstractAction()
+    {
+      public void actionPerformed(ActionEvent e) 
+      {
+        Crossing.player.release("r");
       }
     };
     Action space = new AbstractAction()
@@ -141,19 +150,22 @@ public class Graphix extends JPanel
     this.getActionMap().put("w", w);
     this.getInputMap().put(KeyStroke.getKeyStroke("E"), "e");
     this.getActionMap().put("e", e);
+    this.getInputMap().put(KeyStroke.getKeyStroke(82, 0, true), "rR");
+    this.getActionMap().put("rR", rR);
     this.getInputMap().put(KeyStroke.getKeyStroke("R"), "r");
     this.getActionMap().put("r", r);
     setFocusable(true);
     try {
-      wall = ImageIO.read(new File("wall.jpg"));
-      back = ImageIO.read(new File("ColisionMap.jpg"));
-      fileNotFound = ImageIO.read(new File("fileNotFound.jpg"));
-      //inventory = ImageIO.read(new File("inventory.jpg"));
-      menu2 = ImageIO.read(new File("menu2.jpg"));
-      menu3 = ImageIO.read(new File("menu3.jpg"));
-      menu4 = ImageIO.read(new File("menu4.jpg"));
-      menu5 = ImageIO.read(new File("menu5.jpg"));
-      menuPointer = ImageIO.read(new File("menuPointer.jpg"));
+      door = ImageIO.read(new File("door.png"));
+      hole = ImageIO.read(new File("hole.jpg"));
+      back = ImageIO.read(new File("CollisionMap.png"));
+      fileNotFound = ImageIO.read(new File("fileNotFound.png"));
+      inventory = ImageIO.read(new File("inventory.png"));
+      menu2 = ImageIO.read(new File("menu2.png"));
+      menu3 = ImageIO.read(new File("menu3.png"));
+      menu4 = ImageIO.read(new File("menu4.png"));
+      menu5 = ImageIO.read(new File("menu5.png"));
+      menuPointer = ImageIO.read(new File("menuPointer.png"));
       star = ImageIO.read(new File("star.jpg"));
     } catch (Exception p) {}
   }
@@ -176,38 +188,59 @@ public class Graphix extends JPanel
     g2d.drawImage(back, (int)(Crossing.PLAYERLOCATION-Crossing.player.box.x), (int)(Crossing.PLAYERLOCATION-Crossing.player.box.y), this);
     g2d.setColor(Color.black);
     for (Rectangle x:Crossing.worldWalls)
-    {
       g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
-    }
     g2d.setColor(Color.blue);
-    for (Rectangle x:Crossing.water)
+    for (Polygon x:Crossing.water)
     {
-      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
+      x.translate(0-Crossing.player.box.x+Crossing.PLAYERLOCATION, 0-Crossing.player.box.y+Crossing.PLAYERLOCATION);
+      g2d.drawPolygon(x);
+      x.translate(Crossing.player.box.x-Crossing.PLAYERLOCATION, Crossing.player.box.y-Crossing.PLAYERLOCATION);
     }
+    g2d.drawImage(door, Crossing.door.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.door.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    g2d.fillRect(Crossing.shopKeeper.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.shopKeeper.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64);
     Crossing.bobber.paint(g);
-    g2d.setColor(Color.orange);
-    g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
-    for (int a=-8; a<8; a++)
+    if (Crossing.shopping==false)
     {
-      for (int b=-8; b<8; b++)
+      for (int a=-8; a<8; a++)
       {
-        if (Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b] instanceof Hole)
-          g2d.drawImage(wall, (int)(Crossing.player.box.x/64+a)*64-Crossing.player.box.x+Crossing.PLAYERLOCATION, (int)(Crossing.player.box.y/64+b)*64-Crossing.player.box.y+Crossing.PLAYERLOCATION, this);
-        for (int x=0; x<Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-          Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-        for (int x=0; x<Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-          Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-        for (int x=0; x<Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-          Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-        for (int x=0; x<Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-          Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-        if (Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b]!=null)
-          Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].paint(g);
+        for (int b=-8; b<8; b++)
+        {
+          if (Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b]!=null)
+            Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].paint(g);
+        }
+      }
+      for (int a=-8; a<8; a++)
+      {
+        for (int b=-8; b<8; b++)
+        {
+          for (int x=0; x<Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+          for (int x=0; x<Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        }
+      }
+      for (int a=-8; a<8; a++)
+      {
+        for (int b=-8; b<8; b++)
+        {
+          for (int x=0; x<Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        }
+      }
+      g2d.setColor(Color.orange);
+      g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
+      for (int a=-8; a<8; a++)
+      {
+        for (int b=-8; b<8; b++)
+        {
+          for (int x=0; x<Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        }
       }
     }
     if (Crossing.player.menu>0)
     {
-      g2d.drawImage(inventory, null, 100, 500); //600p by 200p
+      g2d.drawImage(inventory, null, 80, 373);
       for (int a=0; a<6; a++)
       {
         for (int b=1; b<4; b++)
@@ -218,26 +251,77 @@ public class Graphix extends JPanel
       }
       if (Crossing.inventory[0][0] != null)
         g2d.drawImage(Crossing.inventory[0][0].image, 384, 384, 32, 32, this);
-      g2d.setColor(Color.blue);
-      if (Crossing.player.selected1y==0)
-        g2d.drawRect(384, 384, 32, 32);
+      if (Crossing.player.held==true)
+        g2d.setColor(Color.red);
       else
-      g2d.drawRect(Crossing.player.selected1x*90+158,Crossing.player.selected1y*58+526,32,32);
+        g2d.setColor(Color.blue);
+      if (Crossing.player.selected1y==0)
+      {
+        g2d.drawRect(384, 384, 32, 32);
+        if (Crossing.inventory[0][0]!=null)
+          g2d.drawString(Crossing.inventory[0][0].s, 400, 380);
+      }
+      else
+      {
+        g2d.drawRect(Crossing.player.selected1x*90+158,Crossing.player.selected1y*58+526,32,32);
+        if (Crossing.inventory[Crossing.player.selected1x][Crossing.player.selected1y]!=null)
+          g2d.drawString(Crossing.inventory[Crossing.player.selected1x][Crossing.player.selected1y].s, Crossing.player.selected1x*90+174, Crossing.player.selected1y*58+522);
+      }
+      if (Crossing.player.held==true)
+      {
+        if (Crossing.player.heldy==0)
+          g2d.drawRect(384, 384, 32, 32);
+        else
+          g2d.drawRect(Crossing.player.heldx*90+158,Crossing.player.heldy*58+526,32,32);
+      }
       switch(Crossing.player.menu)
       {
         case 1: break;
-        case 2: g2d.drawImage(menu2, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-        g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
-          break;
-        case 3: g2d.drawImage(menu3, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-        g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
-          break;
-        case 4: g2d.drawImage(menu4, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-        g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
-          break;
-        case 5: g2d.drawImage(menu5, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-        g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
-          break;
+        case 2: if (Crossing.player.selected1y!=0)
+        {
+          g2d.drawImage(menu2, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+492);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+185,Crossing.player.selected1y*58+503+Crossing.player.selected2*31);
+        }
+        else
+        {
+          g2d.drawImage(menu2, null, 416,350);
+          g2d.drawImage(menuPointer, null, 411,360+Crossing.player.selected2*31);
+        }
+        break;
+        case 3: if (Crossing.player.selected1y!=0)
+        {
+          g2d.drawImage(menu3, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+478);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+185,Crossing.player.selected1y*58+490+Crossing.player.selected2*30);
+        }
+        else
+        {
+          g2d.drawImage(menu3, null, 416,336);
+          g2d.drawImage(menuPointer, null, 411,347+Crossing.player.selected2*30);
+        }
+        break;
+        case 4: if (Crossing.player.selected1y!=0)
+        {
+          g2d.drawImage(menu4, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+478);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+183,Crossing.player.selected1y*58+490+Crossing.player.selected2*30);
+        }
+        else
+        {
+          g2d.drawImage(menu4, null, 416,336);
+          g2d.drawImage(menuPointer, null, 411,347+Crossing.player.selected2*30);
+        }
+        break;
+        case 5:if (Crossing.player.selected1y!=0)
+        {
+          g2d.drawImage(menu5, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+461);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+180+5,Crossing.player.selected1y*58+465+5+Crossing.player.selected2*31);
+        }
+        else
+        {
+          g2d.drawImage(menu5, null, 416,319);
+          g2d.drawImage(menuPointer, null, 411,329+Crossing.player.selected2*31);
+        }
+        break;
+        //case 6:g2d.drawImage(menu6, null, 416,400);
       }
     }
   }

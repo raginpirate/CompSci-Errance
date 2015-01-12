@@ -4,6 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.awt.Polygon;
 public class Villagers extends Entity
 {
   private double angle=2;
@@ -26,6 +27,7 @@ public class Villagers extends Entity
   public Villagers(String s, int a, int b)
   {
     eat=false;
+    this.s=s;
     image = Graphix.buffer(s + ".jpg");
     ani1 = Graphix.buffer(s + "1.jpg");
     ani2 = Graphix.buffer(s + "2.jpg");
@@ -90,7 +92,7 @@ public class Villagers extends Entity
       if (x.intersects(box))
         return true;
     }
-    for (Rectangle x:Crossing.water)
+    for (Polygon x:Crossing.water)
     {
       if (x.intersects(box))
         return true;
@@ -113,10 +115,6 @@ public class Villagers extends Entity
   {
     System.out.println("The villager ignores you!");
     return true;
-  }
-  public void water()
-  {
-    
   }
   
   public void paint(Graphics g)

@@ -2,16 +2,30 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 public class Items extends Entity
 {
-  public Items()
+  public Items(String s)
   {
-    image = Graphix.buffer("bobber.jpg");
-    box.width=16;
-    box.height=16;
+    box.width=64;
+    box.height=64;
+    this.s=s;
+    image=Graphix.buffer(s + ".jpg");
+    if (s=="bobber")
+    {
+      box.width=16;
+      box.height=16;
+    }
+    else if (s=="shovel")
+      equipment=1;
+    else if (s=="net")
+      equipment=2;
+    else if (s=="rod")
+      equipment=3;
+    else if (s=="can")
+      equipment=4;
   }
   public void update(){}
   public void paint(Graphics g)
   {
-    g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 16, 16, null);
+    g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
   }
   public boolean interact()
   {
@@ -33,5 +47,9 @@ public class Items extends Entity
       }
     }
     return true;
+  }
+  public void water()
+  {
+    
   }
 }

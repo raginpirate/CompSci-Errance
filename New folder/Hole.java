@@ -9,11 +9,7 @@ public class Hole extends Entity
   }
   public void paint(Graphics g)
   {
-    
-  }
-  public void water()
-  {
-    
+    g.drawImage(Graphix.hole, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
   }
   public boolean interact()
   {

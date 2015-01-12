@@ -3,7 +3,6 @@ import java.awt.image.BufferedImage;
 public class Plants extends Entity
 {
   private boolean lootable=false;
-  private String s;
   private int growCount=0;
   private int stage=0;
   private int water=50;
@@ -14,31 +13,39 @@ public class Plants extends Entity
   private BufferedImage stage2w;
   private BufferedImage stage3w;
   
-  public Plants(String s, boolean fruit)
+  public Plants(String s)
   {
     this.s=s;
-    if (s=="strawberry")
+    if (s.contains("strawberry"))
       lootable=true;
-    else if (s=="carrot")
+    else if (s.contains("carrot"))
       lootable=false;
-    else if (s=="turnip")
+    else if (s.contains("turnip"))
+      lootable=false;
+    else
       lootable=true;
-    if (fruit)
+    if (s.contains("seeds"))
     {
-      image = Graphix.buffer(s + "f.jpg");
-      eat=true;
+      image = Graphix.buffer(s + ".jpg");
+      eat=false;
+      stage1 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1.jpg");
+      stage2 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "2.jpg");
+      stage3 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "3.jpg");
+      stage1w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1w.jpg");
+      stage2w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "2w.jpg");
+      stage3w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "3w.jpg");
     }
     else
     {
       image = Graphix.buffer(s + ".jpg");
-      eat=false;
+      eat=true;
+      stage1 = Graphix.buffer(s + "1.jpg");
+      stage2 = Graphix.buffer(s + "2.jpg");
+      stage3 = Graphix.buffer(s + "3.jpg");
+      stage1w = Graphix.buffer(s + "1w.jpg");
+      stage2w = Graphix.buffer(s + "2w.jpg");
+      stage3w = Graphix.buffer(s + "3w.jpg");
     }
-    stage1 = Graphix.buffer(s + "1.jpg");
-    stage2 = Graphix.buffer(s + "2.jpg");
-    stage3 = Graphix.buffer(s + "3.jpg");
-    stage1w = Graphix.buffer(s + "1w.jpg");
-    stage2w = Graphix.buffer(s + "2w.jpg");
-    stage3w = Graphix.buffer(s + "3w.jpg");
     growCount=(int)(Math.random()*2+1);
   }
   
@@ -52,8 +59,11 @@ public class Plants extends Entity
         stage++;
         if (stage!=2)
           growCount=(int)(Math.random()*2+1);
-        else
-          image = Graphix.buffer(s + "f.jpg");
+        else if (s.contains("seeds"))
+        {
+          s=s.substring(0, s.indexOf(' '));
+          image = Graphix.buffer(s + ".jpg");
+        }
       }
     }
     water=water-10;
@@ -101,7 +111,7 @@ public class Plants extends Entity
           {
             if (Crossing.inventory[f][k]==null)
             {
-              Crossing.inventory[f][k]=new Plants(s, true);
+              Crossing.inventory[f][k]=new Plants(s);
               break loop;
             }
             else if (f==5 && k==3){}

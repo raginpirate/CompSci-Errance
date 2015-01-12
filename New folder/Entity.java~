@@ -7,9 +7,12 @@ abstract class Entity
 {
   Rectangle box = new Rectangle(0,0,64,64);
   boolean eat;
+  String s;
   int state;
+  int equipment;
   BufferedImage image;
   abstract void update();
   abstract boolean interact();
   abstract void paint(Graphics g);
+  abstract void water();
 }

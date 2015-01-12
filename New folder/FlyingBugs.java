@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.Polygon;
 public class FlyingBugs extends Entity
 {
   private double angle=2;
@@ -18,14 +19,14 @@ public class FlyingBugs extends Entity
   private int count=0;
   private int aiValue;
   
-  public FlyingBugs(String s, int a, int b, int boundary)
+  public FlyingBugs(String s, int a, int b)
   {
     eat=false;
+    this.s=s;
     image = Graphix.buffer(s + ".jpg");
     ani1 = Graphix.buffer(s + "1.jpg");
     ani2 = Graphix.buffer(s + "2.jpg");
     ani3 = Graphix.buffer(s + "3.jpg");
-    this.boundary = boundary;
     box.x=a*64;
     box.y=b*64;
     state=2;
@@ -161,8 +162,6 @@ public class FlyingBugs extends Entity
     }
     return true;
   }
-  
-  public void water(){}
   
   public void paint(Graphics g)
   {
