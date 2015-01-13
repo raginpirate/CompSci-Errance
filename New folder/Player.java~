@@ -5,7 +5,7 @@ import java.awt.Polygon;
 import java.awt.Color;
 public class Player
 {
-  Rectangle box = new Rectangle(605,605,64,64);
+  Rectangle box = new Rectangle(900,900,64,64);
   int menu=0;
   int selected1x;
   int selected1y;
@@ -100,7 +100,12 @@ public class Player
       {
         if (menu>1)
         {
-          if (selected2<(menu-1)/2+2)
+          if (menu==6 && selected2<2) 
+          {
+            System.out.println("weo");
+            selected2++;
+          }
+          else if (selected2<(menu-1)/2+2)
             selected2++;
         }
         else if (menu==1)
@@ -166,13 +171,13 @@ public class Player
       
       if (s=="w")
       {
-        for(int a=0; a<60; a++)
+        for(int a=0; a<76; a++)
         {
-          for (int b=0; b<40; b++)
+          for (int b=0; b<56; b++)
           {
             if (Crossing.grid[a][b] instanceof Plants)
             {
-              if (Crossing.grid[a][b].state==0)
+              if (Crossing.grid[a][b].state>1)
                 Crossing.grid[a][b].update();
             }
           }
@@ -180,8 +185,8 @@ public class Player
       }
       
       if (s=="e")
-        Crossing.quit=false;
-        //System.out.println(box.x + " " + box.y);
+        //Crossing.quit=false;
+        System.out.println(box.x + " " + box.y);
       //System.out.println("Run function hotkey(e)");
       
       if (s=="r")
@@ -400,6 +405,17 @@ public class Player
           break;
         }
         break;
+        case 6: switch(selected2)
+        {
+          case 0:menu=7;
+          break;
+          case 1:menu=8;
+          break;
+          case 2:menu=9;
+          break;
+          case 3:menu=0;
+          break;
+        }
       }
     }
     catch (Exception e) {}
@@ -426,7 +442,7 @@ public class Player
     temp.box.y=Math.round(l)*64;
     if (worldCollision(temp.box, false))
     {
-      if (Crossing.grid[k][l] == null || (Crossing.grid[k][l] instanceof Plants && Crossing.grid[k][l].state==0))
+      if (Crossing.grid[k][l] == null || (Crossing.grid[k][l] instanceof Plants && Crossing.grid[k][l].state>1))
       {
         if (y)
         {
@@ -672,7 +688,10 @@ public class Player
   
   private void burry()
   {
-    Crossing.inventory[selected1x][selected1y].state=0;
+    if (Crossing.inventory[selected1x][selected1y] instanceof Plants)
+      Crossing.inventory[selected1x][selected1y].state=2;
+    else
+      Crossing.inventory[selected1x][selected1y].state=0;
     Crossing.inventory[selected1x][selected1y].box.x=buryx*64;
     Crossing.inventory[selected1x][selected1y].box.y=buryy*64;
     Crossing.grid[buryx][buryy]=Crossing.inventory[selected1x][selected1y];
@@ -684,9 +703,6 @@ public class Player
   
   private void hold()
   {
-//    Crossing.inventory[selected1x][selected1y].state=1;
-//    menu=0;
-//    selected2=0;
     heldx=selected1x;
     heldy=selected1y;
     held=true;
@@ -695,14 +711,14 @@ public class Player
   
   private void useWater(int x, int y) throws Exception
   {
-    if (Crossing.grid[box.x/64+x][box.y/64+y] instanceof Plants)
-      Crossing.grid[box.x/64+x][box.y/64+y].water();
+    if (Crossing.grid[box.x/64+x][box.y/64+y].water<100)
+      Crossing.grid[box.x/64+x][box.y/64+y].water=Crossing.grid[box.x/64+x][box.y/64+y].water+20;
     if (Crossing.grid[box.x/64+x+1][box.y/64+y] instanceof Plants)
-      Crossing.grid[box.x/64+x+1][box.y/64+y].water();
+      Crossing.grid[box.x/64+x+1][box.y/64+y].water=Crossing.grid[box.x/64+x+1][box.y/64+y].water+20;
     if (Crossing.grid[box.x/64+x][box.y/64+y+1] instanceof Plants)
-      Crossing.grid[box.x/64+x][box.y/64+y+1].water();
+      Crossing.grid[box.x/64+x][box.y/64+y+1].water=Crossing.grid[box.x/64+x][box.y/64+y+1].water+20;
     if (Crossing.grid[box.x/64+x+1][box.y/64+y+1] instanceof Plants)
-      Crossing.grid[box.x/64+x+1][box.y/64+y+1].water();
+      Crossing.grid[box.x/64+x+1][box.y/64+y+1].water=Crossing.grid[box.x/64+x+1][box.y/64+y+1].water+20;
     throw new Exception();
   }
   
@@ -720,11 +736,6 @@ public class Player
         return false;
       }
       for (Rectangle x:Crossing.worldWalls)
-      {
-        if (x.intersects(c))
-          return false;
-      }
-      for (Polygon x:Crossing.water)
       {
         if (x.intersects(c))
           return false;
@@ -766,10 +777,13 @@ public class Player
       if (x.intersects(c))
         return false;
     }
-    for (Polygon x:Crossing.water)
+    if (!(playerMoving && (Crossing.bridgeOne.contains(box) || Crossing.bridgeTwo.contains(box))))
     {
-      if (x.intersects(c))
-        return false;
+      for (Polygon x:Crossing.water)
+      {
+        if (x.intersects(c))
+          return false;
+      }
     }
     return true;
   }

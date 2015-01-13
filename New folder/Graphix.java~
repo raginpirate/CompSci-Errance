@@ -22,6 +22,8 @@ public class Graphix extends JPanel
   static BufferedImage menu3 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menu4 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menu5 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage menu6 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage buyPoint = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menuPointer = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage star = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage fileNotFound = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
@@ -157,15 +159,17 @@ public class Graphix extends JPanel
     setFocusable(true);
     try {
       door = ImageIO.read(new File("door.png"));
-      hole = ImageIO.read(new File("hole.jpg"));
-      back = ImageIO.read(new File("ColisionMap.jpg"));
-      fileNotFound = ImageIO.read(new File("fileNotFound.jpg"));
+      hole = ImageIO.read(new File("hole.png"));
+      back = ImageIO.read(new File("worldmap.png"));
+      fileNotFound = ImageIO.read(new File("fileNotFound.png"));
       inventory = ImageIO.read(new File("inventory.png"));
-      menu2 = ImageIO.read(new File("menu2.jpg"));
-      menu3 = ImageIO.read(new File("menu3.jpg"));
-      menu4 = ImageIO.read(new File("menu4.jpg"));
-      menu5 = ImageIO.read(new File("menu5.jpg"));
-      menuPointer = ImageIO.read(new File("menuPointer.jpg"));
+      menu2 = ImageIO.read(new File("menu2.png"));
+      menu3 = ImageIO.read(new File("menu3.png"));
+      menu4 = ImageIO.read(new File("menu4.png"));
+      menu5 = ImageIO.read(new File("menu5.png"));
+      menu6 = ImageIO.read(new File("menu6.png"));
+      buyPoint = ImageIO.read(new File("buyPoint.png"));
+      menuPointer = ImageIO.read(new File("menuPointer.png"));
       star = ImageIO.read(new File("star.jpg"));
     } catch (Exception p) {}
   }
@@ -186,41 +190,61 @@ public class Graphix extends JPanel
     Graphics2D g2d = (Graphics2D) g;
     super.paintComponent(g);
     g2d.drawImage(back, (int)(Crossing.PLAYERLOCATION-Crossing.player.box.x), (int)(Crossing.PLAYERLOCATION-Crossing.player.box.y), this);
-    g2d.setColor(Color.black);
-    for (Rectangle x:Crossing.worldWalls)
-      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
-    g2d.setColor(Color.blue);
-    for (Polygon x:Crossing.water)
-    {
-      x.translate(0-Crossing.player.box.x+Crossing.PLAYERLOCATION, 0-Crossing.player.box.y+Crossing.PLAYERLOCATION);
-      g2d.drawPolygon(x);
-      x.translate(Crossing.player.box.x-Crossing.PLAYERLOCATION, Crossing.player.box.y-Crossing.PLAYERLOCATION);
-    }
+//    g2d.setColor(Color.black);
+//    for (Rectangle x:Crossing.worldWalls)
+//      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
+//    g2d.setColor(Color.blue);
+//    for (Polygon x:Crossing.water)
+//    {
+//      x.translate(0-Crossing.player.box.x+Crossing.PLAYERLOCATION, 0-Crossing.player.box.y+Crossing.PLAYERLOCATION);
+//      g2d.drawPolygon(x);
+//      x.translate(Crossing.player.box.x-Crossing.PLAYERLOCATION, Crossing.player.box.y-Crossing.PLAYERLOCATION);
+//    }
+    g2d.drawImage(door, Crossing.door.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.door.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    g2d.fillRect(Crossing.shopKeeper.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.shopKeeper.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64);
     Crossing.bobber.paint(g);
-    g2d.setColor(Color.orange);
-    g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
     if (Crossing.shopping==false)
     {
       for (int a=-8; a<8; a++)
       {
         for (int b=-8; b<8; b++)
         {
-          for (int x=0; x<Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-            Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-          for (int x=0; x<Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-            Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-          for (int x=0; x<Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-            Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
-          for (int x=0; x<Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
-            Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
           if (Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b]!=null)
             Crossing.grid[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].paint(g);
+        }
+      }
+      for (int a=-8; a<8; a++)
+      {
+        for (int b=-8; b<8; b++)
+        {
+          for (int x=0; x<Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.fish[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+          for (int x=0; x<Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.bugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        }
+      }
+      for (int a=-8; a<8; a++)
+      {
+        for (int b=-8; b<8; b++)
+        {
+          for (int x=0; x<Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.villagers[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
+        }
+      }
+      g2d.setColor(Color.orange);
+      g2d.fillRect(Crossing.PLAYERLOCATION, Crossing.PLAYERLOCATION, 64, 64);
+      for (int a=-8; a<8; a++)
+      {
+        for (int b=-8; b<8; b++)
+        {
+          for (int x=0; x<Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].size(); x++)
+            Crossing.flyingBugs[Crossing.player.box.x/64+a][Crossing.player.box.y/64+b].get(x).paint(g);
         }
       }
     }
     if (Crossing.player.menu>0)
     {
-      g2d.drawImage(inventory, null, 80, 373); //600p by 200p
+      g2d.drawImage(inventory, null, 80, 373);
       for (int a=0; a<6; a++)
       {
         for (int b=1; b<4; b++)
@@ -232,7 +256,7 @@ public class Graphix extends JPanel
       if (Crossing.inventory[0][0] != null)
         g2d.drawImage(Crossing.inventory[0][0].image, 384, 384, 32, 32, this);
       if (Crossing.player.held==true)
-        g2d.setColor(Color.green);
+        g2d.setColor(Color.red);
       else
         g2d.setColor(Color.blue);
       if (Crossing.player.selected1y==0)
@@ -259,52 +283,52 @@ public class Graphix extends JPanel
         case 1: break;
         case 2: if (Crossing.player.selected1y!=0)
         {
-          g2d.drawImage(menu2, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
+          g2d.drawImage(menu2, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+492);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+185,Crossing.player.selected1y*58+503+Crossing.player.selected2*31);
         }
         else
         {
-          g2d.drawImage(menu2, null, 416,400);
-          g2d.drawImage(menuPointer, null, 421,405+Crossing.player.selected2*20);
+          g2d.drawImage(menu2, null, 416,350);
+          g2d.drawImage(menuPointer, null, 411,360+Crossing.player.selected2*31);
         }
         break;
         case 3: if (Crossing.player.selected1y!=0)
         {
-          g2d.drawImage(menu3, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
+          g2d.drawImage(menu3, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+478);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+185,Crossing.player.selected1y*58+490+Crossing.player.selected2*30);
         }
         else
         {
-          g2d.drawImage(menu3, null, 416,400);
-          g2d.drawImage(menuPointer, null, 421,405+Crossing.player.selected2*20);
+          g2d.drawImage(menu3, null, 416,336);
+          g2d.drawImage(menuPointer, null, 411,347+Crossing.player.selected2*30);
         }
         break;
         case 4: if (Crossing.player.selected1y!=0)
         {
-          g2d.drawImage(menu4, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
+          g2d.drawImage(menu4, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+478);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+183,Crossing.player.selected1y*58+490+Crossing.player.selected2*30);
         }
         else
         {
-          g2d.drawImage(menu4, null, 416,400);
-          g2d.drawImage(menuPointer, null, 421,405+Crossing.player.selected2*20);
+          g2d.drawImage(menu4, null, 416,336);
+          g2d.drawImage(menuPointer, null, 411,347+Crossing.player.selected2*30);
         }
         break;
         case 5:if (Crossing.player.selected1y!=0)
         {
-          g2d.drawImage(menu5, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+542);
-          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+190+5,Crossing.player.selected1y*58+542+5+Crossing.player.selected2*20);
+          g2d.drawImage(menu5, null, Crossing.player.selected1x*90+190,Crossing.player.selected1y*58+461);
+          g2d.drawImage(menuPointer, null, Crossing.player.selected1x*90+180+5,Crossing.player.selected1y*58+465+5+Crossing.player.selected2*31);
         }
         else
         {
-          g2d.drawImage(menu5, null, 416,400);
-          g2d.drawImage(menuPointer, null, 421,405+Crossing.player.selected2*20);
+          g2d.drawImage(menu5, null, 416,319);
+          g2d.drawImage(menuPointer, null, 411,329+Crossing.player.selected2*31);
         }
         break;
-        //case 6:g2d.drawImage(menu6, null, 416,400);
+        case 6:g2d.drawImage(menu6, null, 130,570);
+        g2d.drawImage(buyPoint, null, 135,620+Crossing.player.selected2*30);
+        break;
       }
     }
-    g2d.drawImage(door, Crossing.door.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.door.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
-    g2d.fillRect(Crossing.shopKeeper.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.shopKeeper.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64);
   }
 }

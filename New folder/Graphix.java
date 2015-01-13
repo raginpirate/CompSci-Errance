@@ -22,6 +22,11 @@ public class Graphix extends JPanel
   static BufferedImage menu3 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menu4 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menu5 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage menu6 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage menu7 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage menu8 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage menu9 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
+  static BufferedImage buyPoint = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage menuPointer = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage star = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
   static BufferedImage fileNotFound = new BufferedImage(100, 50, BufferedImage.TYPE_INT_ARGB);
@@ -157,16 +162,21 @@ public class Graphix extends JPanel
     setFocusable(true);
     try {
       door = ImageIO.read(new File("door.png"));
-      hole = ImageIO.read(new File("hole.jpg"));
-      back = ImageIO.read(new File("CollisionMap.png"));
+      hole = ImageIO.read(new File("hole.png"));
+      back = ImageIO.read(new File("worldmap.png"));
       fileNotFound = ImageIO.read(new File("fileNotFound.png"));
       inventory = ImageIO.read(new File("inventory.png"));
       menu2 = ImageIO.read(new File("menu2.png"));
       menu3 = ImageIO.read(new File("menu3.png"));
       menu4 = ImageIO.read(new File("menu4.png"));
       menu5 = ImageIO.read(new File("menu5.png"));
+      menu6 = ImageIO.read(new File("menu6.png"));
+      menu7 = ImageIO.read(new File("menu7.png"));
+      menu8 = ImageIO.read(new File("menu8.png"));
+      menu9 = ImageIO.read(new File("menu9.png"));
+      buyPoint = ImageIO.read(new File("buyPoint.png"));
       menuPointer = ImageIO.read(new File("menuPointer.png"));
-      star = ImageIO.read(new File("star.jpg"));
+      star = ImageIO.read(new File("star.png"));
     } catch (Exception p) {}
   }
   
@@ -186,16 +196,16 @@ public class Graphix extends JPanel
     Graphics2D g2d = (Graphics2D) g;
     super.paintComponent(g);
     g2d.drawImage(back, (int)(Crossing.PLAYERLOCATION-Crossing.player.box.x), (int)(Crossing.PLAYERLOCATION-Crossing.player.box.y), this);
-    g2d.setColor(Color.black);
-    for (Rectangle x:Crossing.worldWalls)
-      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
-    g2d.setColor(Color.blue);
-    for (Polygon x:Crossing.water)
-    {
-      x.translate(0-Crossing.player.box.x+Crossing.PLAYERLOCATION, 0-Crossing.player.box.y+Crossing.PLAYERLOCATION);
-      g2d.drawPolygon(x);
-      x.translate(Crossing.player.box.x-Crossing.PLAYERLOCATION, Crossing.player.box.y-Crossing.PLAYERLOCATION);
-    }
+//    g2d.setColor(Color.black);
+//    for (Rectangle x:Crossing.worldWalls)
+//      g2d.drawRect(x.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, x.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, x.width, x.height);
+//    g2d.setColor(Color.blue);
+//    for (Polygon x:Crossing.water)
+//    {
+//      x.translate(0-Crossing.player.box.x+Crossing.PLAYERLOCATION, 0-Crossing.player.box.y+Crossing.PLAYERLOCATION);
+//      g2d.drawPolygon(x);
+//      x.translate(Crossing.player.box.x-Crossing.PLAYERLOCATION, Crossing.player.box.y-Crossing.PLAYERLOCATION);
+//    }
     g2d.drawImage(door, Crossing.door.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.door.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
     g2d.fillRect(Crossing.shopKeeper.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, Crossing.shopKeeper.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64);
     Crossing.bobber.paint(g);
@@ -238,9 +248,10 @@ public class Graphix extends JPanel
         }
       }
     }
-    if (Crossing.player.menu>0)
+    if (Crossing.player.menu>0 && Crossing.player.menu<6)
     {
       g2d.drawImage(inventory, null, 80, 373);
+      g2d.drawString(Crossing.player.moneta + "", 105, 662);
       for (int a=0; a<6; a++)
       {
         for (int b=1; b<4; b++)
@@ -321,8 +332,48 @@ public class Graphix extends JPanel
           g2d.drawImage(menuPointer, null, 411,329+Crossing.player.selected2*31);
         }
         break;
-        //case 6:g2d.drawImage(menu6, null, 416,400);
       }
+    }
+    else if (Crossing.player.menu==6)
+    {
+      g2d.drawImage(menu6, null, 130,520);
+      g2d.drawImage(buyPoint, null, 135,570+Crossing.player.selected2*30);
+    }
+    else if (Crossing.player.menu==7)
+    {
+      g2d.drawImage(menu7, null, 224,178);
+      g2d.drawImage(buyPoint, null, 185,233+Crossing.player.selected2*30);
+      g2d.drawString(Crossing.player.moneta + "", 470, 496);
+    }
+    else if (Crossing.player.menu==8)
+    {
+      g2d.drawImage(menu8, null, 224,178);
+      g2d.setColor(Color.blue);
+      if (Crossing.player.selected1x==-1)
+        g2d.drawRect(0,0,100,100);
+      else if (Crossing.player.selected1x==6)
+        g2d.drawRect(600,0,100,100);
+      else
+        g2d.drawRect(Crossing.player.selected1x*90+157,Crossing.player.selected1y*58+525,34,34);
+      g2d.setColor(Color.red);
+      for (int a=0; a<6; a++)
+      {
+        for (int b=1; b<4; b++)
+        {
+          if (Crossing.inventory[a][b] != null)
+          {
+            g2d.drawImage(Crossing.inventory[a][b].image, 158+a*90,526+b*58,32,32, this);
+            if (Crossing.player.selling[a][b-1])
+              g2d.drawRect(a*90+158,b*58+526,32,32);
+          }
+        }
+      }
+      //if ()
+        //g2d.drawString(Crossing.inventory[0][0].s, 400, 380);
+    }
+    else if(Crossing.player.menu==9)
+    {
+      g2d.drawImage(menu9, null, 130,520);
     }
   }
 }

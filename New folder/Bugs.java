@@ -34,11 +34,20 @@ public class Bugs extends Entity
     state=2;
     this.s=s;
     if (s.equals("beetle"))
+    {
       aiValue=1;
+      moneta=20;
+    }
     if (s.equals("grasshopper"))
+    {
       aiValue=2;
+      moneta=25;
+    }
     if (s.equals("ladybug"))
+    {
       aiValue=3;
+      moneta=750;
+    }
   }
   
   public void update()

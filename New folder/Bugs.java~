@@ -33,11 +33,11 @@ public class Bugs extends Entity
     box.y=b*64;
     state=2;
     this.s=s;
-    if (s=="beetle")
+    if (s.equals("beetle"))
       aiValue=1;
-    if (s=="grasshopper")
+    if (s.equals("grasshopper"))
       aiValue=2;
-    if (s=="ladybug")
+    if (s.equals("ladybug"))
       aiValue=3;
   }
   
@@ -199,10 +199,6 @@ public class Bugs extends Entity
     return true;
   }
   
-  public void water()
-  {
-    
-  }
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;

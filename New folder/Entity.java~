@@ -9,10 +9,10 @@ abstract class Entity
   boolean eat;
   String s;
   int state;
+  int water;
   int equipment;
   BufferedImage image;
   abstract void update();
   abstract boolean interact();
   abstract void paint(Graphics g);
-  abstract void water();
 }

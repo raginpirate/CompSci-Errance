@@ -9,23 +9,27 @@ import java.io.*;
  * EXCEPT FOR IF IT REFERS TO ANOTHER CLASS
  * Once you have finished reading this, read Graphix, Entity and then Bugs. Everything else is the same as bugs except with different methods.
  */
-//ladybug spawning on plants
-//money money money
-//make menus
+
+//name display above selected object in menu 8
+//popups
+//player animations
+//bobber string and sizing
+//mob spawn locations
+//fossils
 //make a quit game object
 public class Crossing
 {
   static final int PLAYERLOCATION=368;
   static JFrame frame = new JFrame("Crossing v0.2");
-  static ArrayList<Bugs>[][] bugs = new ArrayList[60][40];
-  static ArrayList<FlyingBugs>[][] flyingBugs = new ArrayList[60][40];
-  static ArrayList<Fish>[][] fish = new ArrayList[60][40];
-  static ArrayList<Villagers>[][] villagers = new ArrayList[60][40];
-  static Entity[][] grid = new Entity[60][40];
+  static ArrayList<Bugs>[][] bugs = new ArrayList[76][56];
+  static ArrayList<FlyingBugs>[][] flyingBugs = new ArrayList[76][56];
+  static ArrayList<Fish>[][] fish = new ArrayList[76][56];
+  static ArrayList<Villagers>[][] villagers = new ArrayList[76][56];
+  static Entity[][] grid = new Entity[76][56];
   static Entity[][] inventory = new Entity[6][4];
   static Rectangle npcBoundaries[] = new Rectangle[1];
-  static Rectangle worldWalls[] = new Rectangle[1];
-  static Polygon water[] = new Polygon[1];
+  static Rectangle worldWalls[] = new Rectangle[33];
+  static Polygon water[] = new Polygon[4];
   static int[][] spawn = new int[12][2];
   static int[][] fishSpawn = new int[12][2];
   static Player player = new Player();
@@ -33,8 +37,11 @@ public class Crossing
   static Fish caught;
   static int growTimer=0;
   static boolean shopping=false;
-  static Rectangle door = new Rectangle(640, 640, 64, 64);
+  static Rectangle door = new Rectangle(1000, 1000, 64, 64);
   static Rectangle shopKeeper = new Rectangle (5000, 4800, 64, 64);
+  static Rectangle bridgeOne=new Rectangle(2770,1165,86,480);
+  static Rectangle bridgeTwo=new Rectangle(3522,2232,445,86);
+  static ArrayList<Integer> ladybugLocations = new ArrayList<Integer>();
   static boolean quit=true;
   
   public static void main(String [] args)
@@ -43,15 +50,16 @@ public class Crossing
     fillArray();
     frame();
     readSaveFile();
-    inventory[0][0]= new Plants("plant");
-    //inventory[3][2]=new Items("net");
-   // inventory[1][1]=new Plants("plant seeds");
+    walls();
+    water();
     for (int a=1; a<3; a++)
     {
       for (int b=0; b<9; b++)
         spawn(a);
     }
     spawn(4);
+    inventory[0][2]=new Items("rod");
+    inventory[0][0]=new Items("shovel");
     worldUpdate();
     save();
     System.exit(0);
@@ -67,6 +75,8 @@ public class Crossing
       String nameSection;
       String xcoords;
       int ycoords;
+      line=br.readLine();
+      player.moneta=Integer.parseInt(line);
       while ((line=br.readLine()) != null)
       {
         if (line.charAt(0)=='0')
@@ -161,20 +171,20 @@ public class Crossing
   }
   private static void fillArray()
   {
-    for(int a=0; a<60; a++)
+    for(int a=0; a<76; a++)
     {
-      for (int b=0; b<40; b++)
+      for (int b=0; b<56; b++)
       {
         bugs[a][b] = new ArrayList<Bugs>();
         flyingBugs[a][b] = new ArrayList<FlyingBugs>();
         fish[a][b] = new ArrayList<Fish>();
         villagers[a][b] = new ArrayList<Villagers>();
-        if (a<8 || a>52 || b<8 || b>32)
-        {
-          grid[a][b] = new Hole();
-          grid[a][b].box.x=a*64;
-          grid[a][b].box.y=b*64;
-        }
+//        if (a<8 || a>68 || b<8 || b>48)
+//        {
+//          grid[a][b] = new Hole();
+//          grid[a][b].box.x=a*64;
+//          grid[a][b].box.y=b*64;
+//        }
       }
     }
     spawn[0][0]=585;
@@ -215,6 +225,63 @@ public class Crossing
     water[0].ypoints[4]=900;
     worldWalls[0]=new Rectangle(0,0,10, 10);
   }
+  public static void walls()
+  {
+    String s;
+    try
+    {
+      FileReader fr = new FileReader("walls.wall");
+      BufferedReader br = new BufferedReader(fr);
+      String line;
+      int count=0;
+      while ((line=br.readLine()) != null)
+      {
+        System.out.println(line);
+        String a=line.substring(line.indexOf(',')+1);
+        System.out.println(a);
+        String b=a.substring(a.indexOf(',')+1);
+        System.out.println(b);
+        String c=b.substring(b.indexOf(',')+1);
+        System.out.println(c);
+        worldWalls[count]=new Rectangle(Integer.parseInt(line.substring(0,line.indexOf(','))), Integer.parseInt(a.substring(0,a.indexOf(','))), Integer.parseInt(b.substring(0,b.indexOf(','))), Integer.parseInt(c));
+        System.out.println(worldWalls[count].x + "," + worldWalls[count].y + "," + worldWalls[count].width + "," + worldWalls[count].height);
+        count++;
+      }
+    }
+    catch(IOException e){} 
+  }
+  public static void water()
+  {
+    String s;
+    try
+    {
+      FileReader fr = new FileReader("water.wall");
+      BufferedReader br = new BufferedReader(fr);
+      String line;
+      int waterNumber=0;
+      int pointNumber=-1;
+      while ((line=br.readLine()) != null)
+      {
+        if (line.equals(""))
+        {
+          waterNumber++;
+          pointNumber=-1;
+        }
+        else if (pointNumber==-1)
+        {
+          water[waterNumber]=new Polygon(new int[Integer.parseInt(line)], new int[Integer.parseInt(line)], Integer.parseInt(line));
+          pointNumber++;
+        }
+        else
+        {
+          water[waterNumber].xpoints[pointNumber]=Integer.parseInt(line.substring(0,line.indexOf(',')));
+          water[waterNumber].ypoints[pointNumber]=Integer.parseInt(line.substring(line.indexOf(',')+1));
+          pointNumber++;
+        }
+      }
+    }
+    catch(IOException e){} 
+  }
   
   private static void frame()
   {
@@ -234,9 +301,9 @@ public class Crossing
       if (growTimer==600)
       {
         growTimer=0;
-        for(int a=0; a<60; a++)
+        for(int a=0; a<76; a++)
         {
-          for (int b=0; b<40; b++)
+          for (int b=0; b<56; b++)
           {
             if (grid[a][b] instanceof Plants)
               grid[a][b].update();
@@ -260,9 +327,10 @@ public class Crossing
     {
       FileWriter fw = new FileWriter("save.save");
       PrintWriter pw = new PrintWriter(fw);
-      for(int a=0; a<60; a++)
+      pw.println(player.moneta);
+      for(int a=0; a<76; a++)
       {
-        for (int b=0; b<40; b++)
+        for (int b=0; b<56; b++)
         {
           if (grid[a][b]!=null)
           {
@@ -316,19 +384,16 @@ public class Crossing
       if (Math.random()<0.34)
       {
         int temp=(int)(Math.random()*nearPlayer.size());
-        System.out.println(spawn[nearPlayer.get(temp)][0] + ", " + spawn[nearPlayer.get(temp)][1]);
         flyingBugs[spawn[nearPlayer.get(temp)][0]/64][spawn[nearPlayer.get(temp)][1]/64].add(new FlyingBugs("butterfly", spawn[nearPlayer.get(temp)][0]/64, spawn[nearPlayer.get(temp)][1]/64));
       }
       else if (Math.random()<0.5)
       {
         int temp=(int)(Math.random()*nearPlayer.size());
-        System.out.println(spawn[nearPlayer.get(temp)][0] + ", " + spawn[nearPlayer.get(temp)][1]);
         flyingBugs[spawn[nearPlayer.get(temp)][0]/64][spawn[nearPlayer.get(temp)][1]/64].add(new FlyingBugs("dragonfly", spawn[nearPlayer.get(temp)][0]/64, spawn[nearPlayer.get(temp)][1]/64));
       }
       else
       {
         int temp=(int)(Math.random()*nearPlayer.size());
-        System.out.println(spawn[nearPlayer.get(temp)][0] + ", " + spawn[nearPlayer.get(temp)][1]);
         flyingBugs[spawn[nearPlayer.get(temp)][0]/64][spawn[nearPlayer.get(temp)][1]/64].add(new FlyingBugs("fly", spawn[nearPlayer.get(temp)][0]/64, spawn[nearPlayer.get(temp)][1]/64));
       }
     }
@@ -339,10 +404,25 @@ public class Crossing
         if (!(spawn[a][0]<player.box.x+512 && spawn[a][0]>player.box.x-512 && spawn[a][1]<player.box.y+512 && spawn[a][1]>player.box.y-512))
           nearPlayer.add(a);
       }
-      if (Math.random()<0.34)
+      ArrayList<Integer> ladyBugCoords[] = new ArrayList[2];
+      ladyBugCoords[0]=new ArrayList<Integer>();
+      ladyBugCoords[1]=new ArrayList<Integer>();
+      for (int a=0; a<76; a++)
       {
-        int temp=(int)(Math.random()*nearPlayer.size());
-        bugs[spawn[nearPlayer.get(temp)][0]/64][spawn[nearPlayer.get(temp)][1]/64].add(new Bugs("beetle", spawn[nearPlayer.get(temp)][0]/64, spawn[nearPlayer.get(temp)][1]/64));
+        for (int b=0; b<56; b++)
+        {
+          if (grid[a][b] instanceof Plants && !(a*64<player.box.x+512 && a*64>player.box.x-512 && b*64<player.box.y+512 && b*64>player.box.y-512) && ladybugLocations.indexOf(a*100+b)== -1)
+          {
+            ladyBugCoords[0].add(a);
+            ladyBugCoords[1].add(b);
+          }
+        }
+      }
+      if (Math.random()<0.34 && ladyBugCoords[0].size()>0)
+      {
+        int temp = (int)(Math.random()*ladyBugCoords[0].size());
+        bugs[ladyBugCoords[0].get(temp)][ladyBugCoords[1].get(temp)].add(new Bugs("ladybug", ladyBugCoords[0].get(temp), ladyBugCoords[1].get(temp)));
+        ladybugLocations.add(ladyBugCoords[0].get(temp)*100+ladyBugCoords[1].get(temp));
       }
       else if (Math.random()<0.5)
       {
@@ -352,7 +432,7 @@ public class Crossing
       else
       {
         int temp=(int)(Math.random()*nearPlayer.size());
-        bugs[spawn[nearPlayer.get(temp)][0]/64][spawn[nearPlayer.get(temp)][1]/64].add(new Bugs("ladybug", spawn[nearPlayer.get(temp)][0]/64, spawn[nearPlayer.get(temp)][1]/64));
+        bugs[spawn[nearPlayer.get(temp)][0]/64][spawn[nearPlayer.get(temp)][1]/64].add(new Bugs("beetle", spawn[nearPlayer.get(temp)][0]/64, spawn[nearPlayer.get(temp)][1]/64));
       }
     }
     else if (type==3)
@@ -385,20 +465,20 @@ public class Crossing
       villagers[spawn[temp][0]/64][spawn[temp][1]/64].add(new Villagers("villager1", spawn[temp][0]/64, spawn[temp][1]/64));
       while(tempb==temp)
         tempb=(int)(Math.random()*12);
-      villagers[spawn[temp][0]/64][spawn[temp][1]/64].add(new Villagers("villager2", spawn[temp][0]/64, spawn[temp][1]/64));
-      tempb=temp;
-      while(tempb==temp)
-        tempb=(int)(Math.random()*12);
-      villagers[spawn[temp][0]/64][spawn[temp][1]/64].add(new Villagers("villager3", spawn[temp][0]/64, spawn[temp][1]/64));
+      villagers[spawn[tempb][0]/64][spawn[tempb][1]/64].add(new Villagers("villager2", spawn[tempb][0]/64, spawn[tempb][1]/64));
+      int tempc=tempb;
+      while(tempc==tempb || tempc==temp)
+        tempc=(int)(Math.random()*12);
+      villagers[spawn[tempc][0]/64][spawn[tempc][1]/64].add(new Villagers("villager3", spawn[tempc][0]/64, spawn[tempc][1]/64));
     }
   }
   
   private static void movement()
   {
     player.move();
-    for (int a=0; a<60; a++)
+    for (int a=0; a<76; a++)
     {
-      for (int b=0; b<40; b++)
+      for (int b=0; b<56; b++)
       {
         for (int c=0; c<bugs[a][b].size(); c++)
           bugs[a][b].get(c).update();

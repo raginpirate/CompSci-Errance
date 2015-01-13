@@ -5,11 +5,13 @@ import java.awt.Polygon;
 import java.awt.Color;
 public class Player
 {
-  Rectangle box = new Rectangle(605,605,64,64);
+  Rectangle box = new Rectangle(900,900,64,64);
+  boolean[][] selling= new boolean[6][3];
   int menu=0;
   int selected1x;
   int selected1y;
   int selected2;
+  int moneta=1000;
   private boolean fishing=false;
   private boolean up;
   private boolean down;
@@ -80,7 +82,12 @@ public class Player
       {
         if (menu>1)
         {
-          if (selected2>0)
+          if (menu==8)
+          {
+            if (selected1y>0)
+              selected1y--;
+          }
+          else if (selected2>0)
             selected2--;
         }
         else if (menu==1)
@@ -100,7 +107,22 @@ public class Player
       {
         if (menu>1)
         {
-          if (selected2<(menu-1)/2+2)
+          if (menu==6) 
+          {
+            if (selected2<3)
+              selected2++;
+          }
+          else if (menu==7)
+          {
+            if (selected2<7)
+              selected2++;
+          }
+          else if (menu==8)
+          {
+            if (selected1y<2)
+              selected1y++;
+          }
+          else if (selected2<(menu-1)/2+2)
             selected2++;
         }
         else if (menu==1)
@@ -114,7 +136,12 @@ public class Player
       
       if (s=="left")
       {
-        if (menu==1)
+        if (menu==8)
+        {
+          if (selected1x>-1)
+            selected1x--;
+        }
+        else if (menu==1)
         {
           if (selected1x>0)
             selected1x--;
@@ -125,7 +152,12 @@ public class Player
       
       if (s=="right")
       {
-        if (menu==1)
+        if (menu==8)
+        {
+          if (selected1x<6)
+            selected1x++;
+        }
+        else if (menu==1)
         {
           if (selected1x<5 && selected1y!=0)
             selected1x++;
@@ -166,9 +198,9 @@ public class Player
       
       if (s=="w")
       {
-        for(int a=0; a<60; a++)
+        for(int a=0; a<76; a++)
         {
-          for (int b=0; b<40; b++)
+          for (int b=0; b<56; b++)
           {
             if (Crossing.grid[a][b] instanceof Plants)
             {
@@ -180,8 +212,8 @@ public class Player
       }
       
       if (s=="e")
-        Crossing.quit=false;
-        //System.out.println(box.x + " " + box.y);
+        //Crossing.quit=false;
+        System.out.println(box.x + " " + box.y);
       //System.out.println("Run function hotkey(e)");
       
       if (s=="r")
@@ -218,12 +250,135 @@ public class Player
       sprint=false;
   }
   
+  private void purchase(int cost, String itemName)
+  {
+    loop: for (int f=0; f<6; f++)
+    {
+      for (int k=1; k<4; k++)
+      {
+        if (Crossing.inventory[f][k]==null)
+        {
+          Crossing.inventory[f][k]=new Items(itemName);
+          moneta=moneta-cost;
+          break loop;
+        }
+        else if (f==5 && k==3){System.out.println("Inventory full popup");}
+      }
+    }
+  }
+  
   public void spaceBar()
   {
     try
     {
       if (box.x>4000)
       {
+        if (menu==6)
+        {
+          switch(selected2)
+          {
+            case 0:menu=7;
+            break;
+            case 1:menu=8;
+            break;
+            case 2:menu=9;
+            break;
+            case 3:menu=0;
+            break;
+          }
+          selected2=0;
+          throw new Exception();
+        }
+        if (menu==7)
+        {
+          switch(selected2)
+          {
+            case 0:
+              if (moneta>=100)
+                purchase(100, "shovel");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 1:
+              if (moneta>=125)
+                purchase(125, "can");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 2:
+              if (moneta>=200)
+                purchase(200, "net");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 3:
+              if (moneta>=500)
+                purchase(500, "rod");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 4:
+              if (moneta>=1000)
+                purchase(1000, "turnip seeds");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 5:
+              if (moneta>=1000)
+                purchase(1000, "strawberry seeds");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 6:
+              if (moneta>=5000)
+                purchase(5000, "carrot seeds");
+              else
+                System.out.println("Insuffecient funds popup");
+              break;
+            case 7:menu=6;
+            selected2=0;
+            break;
+          }
+          throw new Exception();
+        }
+        if (menu==8)
+        {
+          if (selected1x==-1)
+          {
+            menu=6;
+            for (int a=0; a<6; a++)
+            {
+              for (int b=0; b<3; b++)
+                selling[a][b]=false;
+            }
+            selected1x=0;
+            selected1y=0;
+          }
+          else if (selected1x==6)
+          {
+            int profit=0;
+            for (int a=0; a<6; a++)
+            {
+              for (int b=0; b<3; b++)
+              {
+                if (selling[a][b])
+                {
+                  profit=profit+Crossing.inventory[a][b].moneta;
+                  Crossing.inventory[a][b]=null;
+                  selling[a][b]=false;
+                }
+              }
+            }
+            moneta=moneta+profit;
+            System.out.println("sold for " + profit);
+            selected1x=0;
+            selected1y=0;
+            menu=6;
+          }
+          else
+            selling[selected1x][selected1y]=true;
+          throw new Exception();
+        }
         Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
         if (lastDirection==0)
           temp.y=temp.y-64;
@@ -712,19 +867,14 @@ public class Player
     {
       if (box.intersects(Crossing.door))
       {
-        box.x=640;
-        box.y=800;
-        Crossing.door.x=640;
-        Crossing.door.y=640;
+        box.x=1000;
+        box.y=1200;
+        Crossing.door.x=1000;
+        Crossing.door.y=1000;
         Crossing.shopping=false;
         return false;
       }
       for (Rectangle x:Crossing.worldWalls)
-      {
-        if (x.intersects(c))
-          return false;
-      }
-      for (Polygon x:Crossing.water)
       {
         if (x.intersects(c))
           return false;
@@ -766,10 +916,13 @@ public class Player
       if (x.intersects(c))
         return false;
     }
-    for (Polygon x:Crossing.water)
+    if (!(playerMoving && (Crossing.bridgeOne.contains(box) || Crossing.bridgeTwo.contains(box))))
     {
-      if (x.intersects(c))
-        return false;
+      for (Polygon x:Crossing.water)
+      {
+        if (x.intersects(c))
+          return false;
+      }
     }
     return true;
   }

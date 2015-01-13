@@ -30,12 +30,21 @@ public class FlyingBugs extends Entity
     box.x=a*64;
     box.y=b*64;
     state=2;
-    if (s=="butterfly")
+    if (s.equals("butterfly"))
+    {
       aiValue=1;
-    if (s=="dragonfly")
+      moneta=25;
+    }
+    if (s.equals("dragonfly"))
+    {
       aiValue=2;
-    if (s=="fly")
+      moneta=75;
+    }
+    if (s.equals("fly"))
+    {
       aiValue=3;
+      moneta=5;
+    }
   }
   
   public void update()

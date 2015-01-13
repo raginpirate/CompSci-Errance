@@ -11,6 +11,7 @@ abstract class Entity
   int state;
   int water;
   int equipment;
+  int moneta;
   BufferedImage image;
   abstract void update();
   abstract boolean interact();

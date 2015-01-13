@@ -163,8 +163,6 @@ public class FlyingBugs extends Entity
     return true;
   }
   
-  public void water(){}
-  
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;

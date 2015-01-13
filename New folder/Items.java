@@ -14,18 +14,33 @@ public class Items extends Entity
       box.height=16;
     }
     else if (s.equals("shovel"))
+    {
       equipment=1;
+      moneta=50;
+    }
     else if (s.equals("net"))
+      {
       equipment=2;
+      moneta=100;
+    }
     else if (s.equals("rod"))
+      {
       equipment=3;
+      moneta=250;
+    }
     else if (s.equals("can"))
+      {
       equipment=4;
+      moneta=60;
+    }
   }
   public void update(){}
   public void paint(Graphics g)
   {
-    g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    if (state==0)
+      g.drawImage(Graphix.star, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    else
+      g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
   }
   public boolean interact()
   {
