@@ -10,7 +10,10 @@ import java.io.*;
  * Once you have finished reading this, read Graphix, Entity and then Bugs. Everything else is the same as bugs except with different methods.
  */
 
-//make menus
+//popups
+//player animations
+//mob spawn locations
+//fossils
 //make a quit game object
 public class Crossing
 {
@@ -70,6 +73,8 @@ public class Crossing
       String nameSection;
       String xcoords;
       int ycoords;
+      line=br.readLine();
+      player.moneta=Integer.parseInt(line);
       while ((line=br.readLine()) != null)
       {
         if (line.charAt(0)=='0')
@@ -229,15 +234,10 @@ public class Crossing
       int count=0;
       while ((line=br.readLine()) != null)
       {
-        System.out.println(line);
         String a=line.substring(line.indexOf(',')+1);
-        System.out.println(a);
         String b=a.substring(a.indexOf(',')+1);
-        System.out.println(b);
         String c=b.substring(b.indexOf(',')+1);
-        System.out.println(c);
         worldWalls[count]=new Rectangle(Integer.parseInt(line.substring(0,line.indexOf(','))), Integer.parseInt(a.substring(0,a.indexOf(','))), Integer.parseInt(b.substring(0,b.indexOf(','))), Integer.parseInt(c));
-        System.out.println(worldWalls[count].x + "," + worldWalls[count].y + "," + worldWalls[count].width + "," + worldWalls[count].height);
         count++;
       }
     }
@@ -320,6 +320,7 @@ public class Crossing
     {
       FileWriter fw = new FileWriter("save.save");
       PrintWriter pw = new PrintWriter(fw);
+      pw.println(player.moneta);
       for(int a=0; a<76; a++)
       {
         for (int b=0; b<56; b++)

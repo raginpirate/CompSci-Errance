@@ -194,14 +194,15 @@ public class Bugs extends Entity
         if (Crossing.inventory[f][k]==null)
         {
           Crossing.inventory[f][k]=this;
+          Crossing.player.caught=s;
+          Graphix.popupTimer=0;
           Crossing.grid[box.x/64][box.y/64]=null;
           break loop;
         }
         else if (f==5 && k==3)
         {
-          //Drops to the grid
-          //Crossing.grid[box.x/64][box.y/64]=null;
-          System.out.println("Inventory is full!");
+          Crossing.invFull=true;
+          Graphix.popupTimer=0;
         }
       }
     }

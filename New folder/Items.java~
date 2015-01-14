@@ -7,7 +7,7 @@ public class Items extends Entity
     box.width=64;
     box.height=64;
     this.s=s;
-    image=Graphix.buffer(s + ".jpg");
+    image=Graphix.buffer(s+".jpg");
     if (s=="bobber")
     {
       box.width=16;
@@ -19,17 +19,17 @@ public class Items extends Entity
       moneta=50;
     }
     else if (s.equals("net"))
-      {
+    {
       equipment=2;
       moneta=100;
     }
     else if (s.equals("rod"))
-      {
+    {
       equipment=3;
       moneta=250;
     }
     else if (s.equals("can"))
-      {
+    {
       equipment=4;
       moneta=60;
     }
@@ -37,7 +37,10 @@ public class Items extends Entity
   public void update(){}
   public void paint(Graphics g)
   {
-    g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+    if (state==0)
+      g.drawImage(Graphix.star, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, box.width, box.height, null);
+    else
+      g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
   }
   public boolean interact()
   {

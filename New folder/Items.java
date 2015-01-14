@@ -6,8 +6,9 @@ public class Items extends Entity
   {
     box.width=64;
     box.height=64;
+    state=1;
     this.s=s;
-    image=Graphix.buffer(s + ".jpg");
+    image=Graphix.buffer(s+".jpg");
     if (s=="bobber")
     {
       box.width=16;
@@ -19,19 +20,24 @@ public class Items extends Entity
       moneta=50;
     }
     else if (s.equals("net"))
-      {
+    {
       equipment=2;
       moneta=100;
     }
     else if (s.equals("rod"))
-      {
+    {
       equipment=3;
       moneta=250;
     }
     else if (s.equals("can"))
-      {
+    {
       equipment=4;
       moneta=60;
+    }
+    else if (s.equals("fossil"))
+    {
+      moneta=50;
+      state=0;
     }
   }
   public void update(){}
@@ -40,24 +46,30 @@ public class Items extends Entity
     if (state==0)
       g.drawImage(Graphix.star, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
     else
-      g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
+      g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, box.width, box.height, null);
   }
   public boolean interact()
   {
+    if (state==0)
+      return false;
     loop: for (int f=0; f<6; f++)
     {
       for (int k=1; k<4; k++)
       {
         if (Crossing.inventory[f][k]==null)
         {
+          if (s.equals("fossil"))
+            Crossing.spawn(4);
           Crossing.inventory[f][k]=this;
+          Crossing.player.caught=s;
+          Graphix.popupTimer=0;
           Crossing.grid[box.x/64][box.y/64]=null;
           break loop;
         }
         else if (f==5 && k==3)
         {
-          //Drops to the grid
-          //Crossing.grid[box.x/64][box.y/64]=null;
+          Crossing.invFull=true;
+          Graphix.popupTimer=0;
         }
       }
     }

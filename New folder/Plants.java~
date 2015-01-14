@@ -16,15 +16,23 @@ public class Plants extends Entity
     this.s=s;
     water=50;
     if (s.contains("strawberry"))
+    {
+      moneta=400;
       lootable=true;
+    }
     else if (s.contains("carrot"))
+    {
+      moneta=10000;
       lootable=false;
-    else if (s.contains("turnip"))
-      lootable=false;
+    }
     else
-      lootable=true;
+    {
+      moneta=2000;
+      lootable=false;
+    }
     if (s.contains("seeds"))
     {
+      moneta=moneta/4;
       eat=false;
       image = Graphix.buffer(s + ".jpg");
       stage1 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1.jpg");

@@ -34,6 +34,12 @@ public class Fish extends Entity
     ani3 = Graphix.buffer("fish3.jpg");
     ani4 = Graphix.buffer("fish4.jpg");
     ani5 = Graphix.buffer("fish5.jpg");
+    if (s.equals("salmon"))
+      moneta=100;
+    if (s.equals("seabass"))
+      moneta=100;
+    if (s.equals("crayfish"))
+      moneta=500;
     box.x=64*a;
     box.y=64*b;
     state=2;

@@ -7,24 +7,30 @@ public class Player
 {
   Rectangle box = new Rectangle(900,900,64,64);
   boolean[][] selling= new boolean[6][3];
+  int bought;
+  int sold;
+  boolean insFunds;
+  String caught;
   int menu=0;
-  int selected1x;
-  int selected1y;
+  int selected1x=0;
+  int selected1y=0;
   int selected2;
   int moneta=1000;
-  private boolean fishing=false;
+  boolean fishing=false;
   private boolean up;
   private boolean down;
   private boolean left;
   private boolean right;
-  private int lastDirection=0; // 0 up 1 down 2 left 3 right
+  int lastDirection=0; // 0 up 1 down 2 left 3 right
   private int buryx;
   private int buryy;
   boolean sprint;
   boolean held;
   int heldx;
   int heldy;
-  
+  int animation=0;
+  int animationCount=0;
+  int aniHelp=1;
   public void move()
   {
     if (up)
@@ -36,6 +42,19 @@ public class Player
         moveHelper(-20, -20);
       else
         moveHelper(0, -30);
+      animationCount=animationCount+aniHelp;
+      if(animationCount==5)
+      {
+        aniHelp=-1;
+        animation=1;
+      }
+      else if (animationCount==-5)
+      {
+        aniHelp=1;
+        animation=2;
+      }
+      else if (animationCount==0)
+        animation=0;
     }
     else if (down)
     {
@@ -46,16 +65,59 @@ public class Player
         moveHelper(-20, 20);
       else
         moveHelper(0, 30);
+      animationCount=animationCount+aniHelp;
+      if(animationCount==5)
+      {
+        aniHelp=-1;
+        animation=1;
+      }
+      else if (animationCount==-5)
+      {
+        aniHelp=1;
+        animation=2;
+      }
+      else if (animationCount==0)
+        animation=0;
     }
     else if (left)
     {
       lastDirection=2;
       moveHelper(-30, 0);
+      animationCount=animationCount+aniHelp;
+      if(animationCount==5)
+      {
+        aniHelp=-1;
+        animation=1;
+      }
+      else if (animationCount==-5)
+      {
+        aniHelp=1;
+        animation=2;
+      }
+      else if (animationCount==0)
+        animation=0;
     }
     else if (right)
     {
       lastDirection=3;
       moveHelper(30, 0);
+      animationCount=animationCount+aniHelp;
+      if(animationCount==5)
+      {
+        aniHelp=-1;
+        animation=1;
+      }
+      else if (animationCount==-5)
+      {
+        aniHelp=1;
+        animation=2;
+      }
+      else if (animationCount==0)
+        animation=0;
+    }
+    else
+    {
+      animation=0;
     }
   }
   
@@ -122,6 +184,11 @@ public class Player
             if (selected1y<2)
               selected1y++;
           }
+          else if(menu==10)
+          {
+            if (selected2<1)
+              selected2++;
+          }
           else if (selected2<(menu-1)/2+2)
             selected2++;
         }
@@ -182,17 +249,22 @@ public class Player
           up=false;
           down=false;
           menu=1;
-          if (box.x%64<32)
-          {
-            if (box.y%64<32)
-              checkNearbyHoles(0, 0);
-            else
-              checkNearbyHoles(0, 1);
-          }
-          else if (box.y%64<32)
-            checkNearbyHoles(1, 0);
+          if (Crossing.shopping)
+            buryx=0;
           else
-            checkNearbyHoles(1, 1);
+          {
+            if (box.x%64<32)
+            {
+              if (box.y%64<32)
+                checkNearbyHoles(0, 0);
+              else
+                checkNearbyHoles(0, 1);
+            }
+            else if (box.y%64<32)
+              checkNearbyHoles(1, 0);
+            else
+              checkNearbyHoles(1, 1);
+          }
         }
       }
       
@@ -258,11 +330,16 @@ public class Player
       {
         if (Crossing.inventory[f][k]==null)
         {
-          Crossing.inventory[f][k]=new Items(itemName);
+          if (itemName.contains("seed"))
+            Crossing.inventory[f][k]=new Plants(itemName);
+          else
+            Crossing.inventory[f][k]=new Items(itemName);
           moneta=moneta-cost;
+          bought=cost;
+          Graphix.popupTimer=0;
           break loop;
         }
-        else if (f==5 && k==3){System.out.println("Inventory full popup");}
+        else if (f==5 && k==3){Crossing.invFull=true;Graphix.popupTimer=0;}
       }
     }
   }
@@ -273,9 +350,44 @@ public class Player
     {
       if (box.x>4000)
       {
-        if (menu==6)
+        switch (menu)
         {
-          switch(selected2)
+          case 0:Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
+          if (lastDirection==0)
+            temp.y=temp.y-64;
+          else if (lastDirection==1)
+            temp.y=temp.y+64;
+          else if (lastDirection==2)
+            temp.x=temp.x-64;
+          else if (lastDirection==3)
+            temp.x=temp.x+64;
+          if (temp.intersects(Crossing.shopKeeper))
+            menu=6;
+          break;
+          case 1:
+            if (held)
+          {
+            Entity tempz = Crossing.inventory[selected1x][selected1y];
+            Crossing.inventory[selected1x][selected1y] = Crossing.inventory[heldx][heldy];
+            Crossing.inventory[heldx][heldy] = tempz;
+            held = false;
+            break;
+          }
+            if (Crossing.inventory[selected1x][selected1y] != null)
+              menu=10;
+            break;
+            
+          case 10: switch (selected2)
+          {
+            case 0:hold();
+            break;
+            
+            case 1: menu=1;
+            selected2=0;
+            break;
+          }
+          break;
+          case 6:switch(selected2)
           {
             case 0:menu=7;
             break;
@@ -287,63 +399,78 @@ public class Player
             break;
           }
           selected2=0;
-          throw new Exception();
-        }
-        if (menu==7)
-        {
-          switch(selected2)
+          break;
+          case 7:switch(selected2)
           {
             case 0:
               if (moneta>=100)
-                purchase(100, "shovel");
+              purchase(100, "shovel");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 1:
               if (moneta>=125)
-                purchase(125, "can");
+              purchase(125, "can");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 2:
               if (moneta>=200)
-                purchase(200, "net");
+              purchase(200, "net");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 3:
               if (moneta>=500)
-                purchase(500, "rod");
+              purchase(500, "rod");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 4:
               if (moneta>=1000)
-                purchase(1000, "turnip seeds");
+              purchase(1000, "turnip seeds");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 5:
               if (moneta>=1000)
-                purchase(1000, "strawberry seeds");
+              purchase(1000, "strawberry seeds");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 6:
               if (moneta>=5000)
-                purchase(5000, "carrot seeds");
+              purchase(5000, "carrot seeds");
               else
-                System.out.println("Insuffecient funds popup");
+              {
+                insFunds=true;
+                Graphix.popupTimer=0;
+              }
               break;
             case 7:menu=6;
             selected2=0;
             break;
           }
-          throw new Exception();
-        }
-        if (menu==8)
-        {
-          if (selected1x==-1)
+          break;
+          case 8:if (selected1x==-1)
           {
             menu=6;
             for (int a=0; a<6; a++)
@@ -363,33 +490,25 @@ public class Player
               {
                 if (selling[a][b])
                 {
-                  profit=profit+Crossing.inventory[a][b].moneta;
-                  Crossing.inventory[a][b]=null;
+                  profit=profit+Crossing.inventory[a][b+1].moneta;
+                  Crossing.inventory[a][b+1]=null;
                   selling[a][b]=false;
                 }
               }
             }
             moneta=moneta+profit;
-            System.out.println("sold for " + profit);
+            sold=profit;
+            Graphix.popupTimer=0;
             selected1x=0;
             selected1y=0;
             menu=6;
           }
+          else if (selling[selected1x][selected1y])
+            selling[selected1x][selected1y]=false;
           else
             selling[selected1x][selected1y]=true;
-          throw new Exception();
+          break;
         }
-        Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
-        if (lastDirection==0)
-          temp.y=temp.y-64;
-        else if (lastDirection==1)
-          temp.y=temp.y+64;
-        else if (lastDirection==2)
-          temp.x=temp.x-64;
-        else if (lastDirection==3)
-          temp.x=temp.x+64;
-        if (temp.intersects(Crossing.shopKeeper))
-          menu=6;
         throw new Exception();
       }
       if (fishing)
@@ -406,6 +525,8 @@ public class Player
               if (Crossing.inventory[f][s]==null)
               {
                 Crossing.inventory[f][s]=Crossing.caught;
+                caught=Crossing.caught.s;
+                Graphix.popupTimer=0;
                 Crossing.fish[Crossing.caught.box.x/64][Crossing.caught.box.y/64].remove(Crossing.caught);
                 Crossing.caught=null;
                 Crossing.spawn(3);
@@ -413,7 +534,8 @@ public class Player
               }
               else if (f==5 && s==3)
               {
-                System.out.println("Inventory is full!");
+                Crossing.invFull=true;
+                Graphix.popupTimer=0;
               }
             }
           }
@@ -610,16 +732,19 @@ public class Player
       {
         loop: for (int f=0; f<6; f++)
         {
-          for (int s=1; s<4; k++)
+          for (int s=1; s<4; s++)
           {
             if (Crossing.inventory[f][s]==null)
             {
               Crossing.inventory[f][s]=Crossing.grid[k][l];
+              caught=Crossing.inventory[f][s].s;
+              Graphix.popupTimer=0;
               break loop;
             }
             else if (f==5 && s==3)
             {
-              System.out.println("Inventory is full!");
+              Crossing.invFull=true;
+              Graphix.popupTimer=0;
             }
           }
         }
@@ -691,13 +816,16 @@ public class Player
                   if (Crossing.inventory[f][s]==null)
                   {
                     Crossing.inventory[f][s]=Crossing.bugs[temp.x/64+a][temp.y/64+b].get(d);
+                    caught=Crossing.inventory[f][s].s;
+                    Graphix.popupTimer=0;
                     Crossing.bugs[temp.x/64+a][temp.y/64+b].remove(d);
                     Crossing.spawn(2);
                     throw new Exception();
                   }
                   else if (f==5 && s==3)
                   {
-                    System.out.println("Inventory is full!");
+                    Crossing.invFull=true;
+                    Graphix.popupTimer=0;
                     throw new Exception();
                   }
                 }
@@ -716,12 +844,15 @@ public class Player
                   {
                     Crossing.inventory[f][s]=Crossing.flyingBugs[temp.x/64+a][temp.y/64+b].get(d);
                     Crossing.flyingBugs[temp.x/64+a][temp.y/64+b].remove(d);
+                    caught=Crossing.inventory[f][s].s;
+                    Graphix.popupTimer=0;
                     Crossing.spawn(1);
                     throw new Exception();
                   }
                   else if (f==5 && s==3)
                   {
-                    System.out.println("Inventory is full!");
+                    Crossing.invFull=true;
+                    Graphix.popupTimer=0;
                     throw new Exception();
                   }
                 }
@@ -737,16 +868,22 @@ public class Player
       if (x==0)
       {
         Crossing.bobber.box.x=box.x+24;
-        Crossing.bobber.box.y=box.y+y*192;
+        if (y<0)
+          Crossing.bobber.box.y=box.y+y*160;
+        else
+          Crossing.bobber.box.y=box.y+y*224;
       }
       else
       {
-        Crossing.bobber.box.x=box.x+x*192;
         Crossing.bobber.box.y=box.y+24;
+        if (x<0)
+          Crossing.bobber.box.x=box.x+x*160;
+        else
+          Crossing.bobber.box.x=box.x+x*224;
       }
       for (Polygon d:Crossing.water)
       {
-        if (d.intersects(Crossing.bobber.box))
+        if (d.contains(Crossing.bobber.box) && !(Crossing.bobber.box.intersects(Crossing.bridgeOne) || Crossing.bobber.box.intersects(Crossing.bridgeTwo)))
         {
           fishing=true;
           right=false;

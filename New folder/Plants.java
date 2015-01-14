@@ -70,6 +70,7 @@ public class Plants extends Entity
         {
           s=s.substring(0, s.indexOf(' '));
           image = Graphix.buffer(s + ".jpg");
+          moneta=moneta*4;
         }
       }
     }
@@ -89,23 +90,21 @@ public class Plants extends Entity
           if (Crossing.inventory[f][k]==null)
           {
             Crossing.inventory[f][k]=this;
+            Crossing.player.caught=s;
+            Graphix.popupTimer=0;
             Crossing.grid[box.x/64][box.y/64]=null;
             break loop;
           }
-          else if (f==5 && k==3){}
-          //Drops to the grid
+          else if (f==5 && k==3){Crossing.invFull=true;
+          Graphix.popupTimer=0;}
         }
       }
       return true;
     }
-    System.out.println("weo!");
-    System.out.println(state);
     if (state==4)
     {
       if (lootable)
       {
-        state=2;
-        growCount=(int)(Math.random()*2+1);
         loop: for (int f=0; f<6; f++)
         {
           for (int k=1; k<4; k++)
@@ -113,30 +112,36 @@ public class Plants extends Entity
             if (Crossing.inventory[f][k]==null)
             {
               Crossing.inventory[f][k]=new Plants(s);
+              Crossing.player.caught=s;
+              Graphix.popupTimer=0;
+              state=2;
+              growCount=(int)(Math.random()*2+1);
               break loop;
             }
-            else if (f==5 && k==3){}
-            //Drops to the grid
+            else if (f==5 && k==3){Crossing.invFull=true;
+          Graphix.popupTimer=0;}
           }
         }
         return true;
       }
-      water=50;
-      growCount=(int)(Math.random()*2+1);
       loop: for (int f=0; f<6; f++)
       {
         for (int k=1; k<4; k++)
         {
           if (Crossing.inventory[f][k]==null)
           {
+            water=50;
+            growCount=(int)(Math.random()*2+1);
+            Crossing.player.caught=s;
+            Graphix.popupTimer=0;
             Crossing.inventory[f][k]=this;
             Crossing.grid[box.x/64][box.y/64]=null;
             break loop;
           }
           else if (f==5 && k==3)
           {
-            //Drops to the grid
-            //Crossing.grid[box.x/64][box.y/64]=null;
+            Crossing.invFull=true;
+            Graphix.popupTimer=0;
           }
         }
       }
