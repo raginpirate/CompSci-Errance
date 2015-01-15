@@ -5,7 +5,7 @@ import java.awt.Polygon;
 import java.awt.Color;
 public class Player
 {
-  Rectangle box = new Rectangle(900,900,64,64);
+  Rectangle box = new Rectangle(900,1000,64,64);
   boolean[][] selling= new boolean[6][3];
   int bought;
   int sold;
@@ -30,94 +30,90 @@ public class Player
   int heldy;
   int animation=0;
   int animationCount=0;
-  int aniHelp=1;
   public void move()
   {
     if (up)
     {
       lastDirection=0;
       if (right)
-        moveHelper(20, -20);
+        moveHelper(1, -1);
       else if (left)
-        moveHelper(-20, -20);
+        moveHelper(-1, -1);
       else
-        moveHelper(0, -30);
-      animationCount=animationCount+aniHelp;
-      if(animationCount==5)
+        moveHelper(0, -2);
+      animationCount++;
+      if (sprint)
+        animationCount++;
+      if (animationCount==40 || animationCount==41)
       {
-        aniHelp=-1;
-        animation=1;
-      }
-      else if (animationCount==-5)
-      {
-        aniHelp=1;
+        animationCount=0;
         animation=2;
       }
-      else if (animationCount==0)
+      else if (animationCount==20 || animationCount==21)
+        animation=1;
+      else if (animationCount==10 || animationCount==30 || animationCount==11 || animationCount==31)
         animation=0;
     }
     else if (down)
     {
       lastDirection=1;
       if (right)
-        moveHelper(20, 20);
+        moveHelper(1, 1);
       else if (left)
-        moveHelper(-20, 20);
+        moveHelper(-1, 1);
       else
-        moveHelper(0, 30);
-      animationCount=animationCount+aniHelp;
-      if(animationCount==5)
+        moveHelper(0, 2);
+      animationCount++;
+      if (sprint)
+        animationCount++;
+      if (animationCount==40 || animationCount==41)
       {
-        aniHelp=-1;
-        animation=1;
-      }
-      else if (animationCount==-5)
-      {
-        aniHelp=1;
+        animationCount=0;
         animation=2;
       }
-      else if (animationCount==0)
+      else if (animationCount==20 || animationCount==21)
+        animation=1;
+      else if (animationCount==10 || animationCount==30 || animationCount==11 || animationCount==31)
         animation=0;
     }
     else if (left)
     {
       lastDirection=2;
-      moveHelper(-30, 0);
-      animationCount=animationCount+aniHelp;
-      if(animationCount==5)
+      moveHelper(-2, 0);
+      animationCount++;
+      if (sprint)
+        animationCount++;
+      if (animationCount==40 || animationCount==41)
       {
-        aniHelp=-1;
-        animation=1;
-      }
-      else if (animationCount==-5)
-      {
-        aniHelp=1;
+        animationCount=0;
         animation=2;
       }
-      else if (animationCount==0)
+      else if (animationCount==20 || animationCount==21)
+        animation=1;
+      else if (animationCount==10 || animationCount==30 || animationCount==11 || animationCount==31)
         animation=0;
     }
     else if (right)
     {
       lastDirection=3;
-      moveHelper(30, 0);
-      animationCount=animationCount+aniHelp;
-      if(animationCount==5)
+      moveHelper(2, 0);
+      animationCount++;
+      if (sprint)
+        animationCount++;
+      if (animationCount==40 || animationCount==41)
       {
-        aniHelp=-1;
-        animation=1;
-      }
-      else if (animationCount==-5)
-      {
-        aniHelp=1;
+        animationCount=0;
         animation=2;
       }
-      else if (animationCount==0)
+      else if (animationCount==20 || animationCount==21)
+        animation=1;
+      else if (animationCount==10 || animationCount==30 || animationCount==11 || animationCount==31)
         animation=0;
     }
     else
     {
       animation=0;
+      animationCount=0;
     }
   }
   
@@ -149,7 +145,7 @@ public class Player
             if (selected1y>0)
               selected1y--;
           }
-          else if (selected2>0)
+          else if (selected2>0 && menu!=11)
             selected2--;
         }
         else if (menu==1)
@@ -189,7 +185,7 @@ public class Player
             if (selected2<1)
               selected2++;
           }
-          else if (selected2<(menu-1)/2+2)
+          else if (selected2<(menu-1)/2+2 && menu!=11)
             selected2++;
         }
         else if (menu==1)
@@ -213,6 +209,11 @@ public class Player
           if (selected1x>0)
             selected1x--;
         }
+        else if (menu==11)
+        {
+          if (selected2==1)
+            selected2=0;
+        }
         else if (menu == 0)
           left=true;
       }
@@ -228,6 +229,11 @@ public class Player
         {
           if (selected1x<5 && selected1y!=0)
             selected1x++;
+        }
+        else if (menu==11)
+        {
+          if (selected2==0)
+            selected2=1;
         }
         else if (menu == 0)
           right=true;
@@ -348,7 +354,7 @@ public class Player
   {
     try
     {
-      if (box.x>4000)
+      if (box.x>4500)
       {
         switch (menu)
         {
@@ -362,7 +368,13 @@ public class Player
           else if (lastDirection==3)
             temp.x=temp.x+64;
           if (temp.intersects(Crossing.shopKeeper))
+          {
+            right=false;
+            left=false;
+            up=false;
+            down=false;
             menu=6;
+          }
           break;
           case 1:
             if (held)
@@ -546,6 +558,23 @@ public class Player
       {
         //When we are not using the inventory (case 0)
         case 0:
+          Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
+          if (lastDirection==0)
+            temp.y=temp.y-64;
+          else if (lastDirection==1)
+            temp.y=temp.y+64;
+          else if (lastDirection==2)
+            temp.x=temp.x-64;
+          else if (lastDirection==3)
+            temp.x=temp.x+64;
+          if (temp.intersects(Crossing.sign))
+          {
+            right=false;
+            left=false;
+            up=false;
+            down=false;
+            menu=12;
+          }
           if (box.x%64<32)
         {
           if (box.y%64<32)
@@ -580,9 +609,9 @@ public class Player
         case 1:
           if (held)
         {
-          Entity temp = Crossing.inventory[selected1x][selected1y];
+          Entity temps = Crossing.inventory[selected1x][selected1y];
           Crossing.inventory[selected1x][selected1y] = Crossing.inventory[heldx][heldy];
-          Crossing.inventory[heldx][heldy] = temp;
+          Crossing.inventory[heldx][heldy] = temps;
           held = false;
           break;
         }
@@ -676,6 +705,16 @@ public class Player
           selected2=0;
           break;
         }
+        break;
+        case 11:if (selected2==0)
+          Crossing.quit=false;
+        else
+        {
+          menu=0;
+          selected2=0;
+        }
+        break;
+        case 12:menu=0; 
         break;
       }
     }
@@ -1004,28 +1043,40 @@ public class Player
     {
       if (box.intersects(Crossing.door))
       {
-        box.x=1000;
-        box.y=1200;
-        Crossing.door.x=1000;
-        Crossing.door.y=1000;
+        box.x=4052;
+        box.y=740;
+        Crossing.door.x=4052;
+        Crossing.door.y=660;
         Crossing.shopping=false;
         return false;
       }
-      for (Rectangle x:Crossing.worldWalls)
-      {
-        if (x.intersects(c))
-          return false;
-      }
+      if (!(Crossing.shopWalls[0].contains(box)))
+        return false;
+      if (Crossing.shopWalls[1].intersects(box))
+        return false;
+      if (Crossing.shopWalls[2].intersects(box))
+        return false;
+      if (Crossing.shopWalls[3].intersects(box))
+        return false;
       return true;
     }
     if (box.intersects(Crossing.door))
     {
-      box.x=5000;
-      box.y=5000;
-      Crossing.door.x=5000;
-      Crossing.door.y=5100;
+      box.x=5768;
+      box.y=4516;
+      Crossing.door.x=5768;
+      Crossing.door.y=4600;
       Crossing.shopping=true;
-      return true;
+      return false;
+    }
+    if (box.intersects(Crossing.quitGame))
+    {
+      box.y=box.y+10;
+      menu=11;
+      up=false;
+      down=false;
+      left=false;
+      right=false;
     }
     if (Crossing.grid[box.x/64][box.y/64] instanceof Hole ||  Crossing.grid[(box.x+63)/64][box.y/64] instanceof Hole || Crossing.grid[box.x/64][(box.y+63)/64] instanceof Hole || Crossing.grid[(box.x+63)/64][(box.y+63)/64] instanceof Hole)
       return false;

@@ -28,7 +28,7 @@ public class Fish extends Entity
   {
     eat=false;
     this.s=s;
-    image = Graphix.buffer(s + ".jpg");
+    image = Graphix.buffer(s + ".png");
     ani1 = Graphix.buffer("fish1.jpg");
     ani2 = Graphix.buffer("fish2.jpg");
     ani3 = Graphix.buffer("fish3.jpg");
@@ -78,14 +78,14 @@ public class Fish extends Entity
           accelleration=15;
       }
       else
-      {
         biteTimer--;
-        System.out.println(biteTimer);
-      }
       if (Crossing.bobber.box.x!=0 && biteTimer!=0)
         Crossing.fish[box.x/64][box.y/64].add(this);
       else
+      {
         Crossing.spawn(3);
+        Crossing.caught=null;
+      }
     }
     else if (Crossing.bobber.box.intersects(bobberRectangle))
     {

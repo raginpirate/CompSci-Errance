@@ -10,8 +10,28 @@ import java.io.*;
  * Once you have finished reading this, read Graphix, Entity and then Bugs. Everything else is the same as bugs except with different methods.
  */
 
-//fish swim away if bobber drops on head
-//make a quit game object
+//Check the following:
+
+//Project Charter
+//Team Code of Conduct (team norms)
+//Work Breakdown Stucture
+//Risk Management Plan
+//Use Cases
+//UML Diagram (original and updated final)
+//Any additional Design Documents you used
+
+//Write Reflection Document
+
+//fix bug boundaries
+//fix world spawn locations (using commented method, ez)
+//reduce fossil spawns
+//add various bug animations with timers
+//add villager animations and textures
+//add use animations to the player
+//fix string for bobber
+//solve villager / fish / bug array error
+//clean and comment code
+//add instructions menu?
 public class Crossing
 {
   static final int PLAYERLOCATION=368;
@@ -23,17 +43,20 @@ public class Crossing
   static Entity[][] grid = new Entity[76][56];
   static Entity[][] inventory = new Entity[6][4];
   static Rectangle npcBoundaries[] = new Rectangle[1];
-  static Rectangle worldWalls[] = new Rectangle[33];
-  static Polygon water[] = new Polygon[4];
+  static Rectangle worldWalls[] = new Rectangle[87];
+  static Polygon water[] = new Polygon[5];
   static Player player = new Player();
+  static Rectangle[] shopWalls = new Rectangle[4];
   static Items bobber = new Items("bobber");
   static Fish caught;
   static int growTimer=0;
   static boolean shopping=false;
-  static Rectangle door = new Rectangle(1000, 1000, 64, 64);
-  static Rectangle shopKeeper = new Rectangle (5000, 4800, 64, 64);
+  static Rectangle door = new Rectangle(4052, 660, 64, 64);
+  static Rectangle shopKeeper = new Rectangle (5380, 4102, 64, 64);
+  static Rectangle sign = new Rectangle(1000, 1000, 64, 64);
   static Rectangle bridgeOne=new Rectangle(2770,1165,86,480);
   static Rectangle bridgeTwo=new Rectangle(3522,2232,445,86);
+  static Rectangle quitGame = new Rectangle(900,904,64,64);
   static ArrayList<Integer>[] openSpaces = new ArrayList[2];
   static ArrayList<Integer>[] fishSpaces = new ArrayList[2];
   static boolean quit=true;
@@ -46,10 +69,9 @@ public class Crossing
     frame();
     readSaveFile();
     walls();
+    trees();
     water();
     openSpace();
-    fishSpaces[0].add(7);
-    fishSpaces[1].add(12);
     for (int a=0; a<5; a++)
     {
       for (int b=0; b<9; b++)
@@ -62,6 +84,25 @@ public class Crossing
     save();
     System.exit(0);
   }
+  
+  private static void trees()
+  {
+    String s;
+    try
+    {
+      FileReader fr = new FileReader("trees.wall");
+      BufferedReader br = new BufferedReader(fr);
+      String line;
+      int count=54;
+      while ((line=br.readLine()) != null)
+      {
+        String a=line.substring(line.indexOf(',')+1);
+        worldWalls[count]=new Rectangle(Integer.parseInt(line.substring(0,line.indexOf(','))), Integer.parseInt(a), 64,128);
+        count++;
+      }
+    }
+    catch(IOException e){} 
+  }
   private static void openSpace()
   {
     String s;
@@ -73,11 +114,6 @@ public class Crossing
       int count=0;
       while ((line=br.readLine()) != null)
       {
-//        String a=line.substring(line.indexOf(',')+1);
-//        String b=a.substring(a.indexOf(',')+1);
-//        String c=b.substring(b.indexOf(',')+1);
-//        worldWalls[count]=new Rectangle(Integer.parseInt(line.substring(0,line.indexOf(','))), Integer.parseInt(a.substring(0,a.indexOf(','))), Integer.parseInt(b.substring(0,b.indexOf(','))), Integer.parseInt(c));
-//        count++;
         int a=Integer.parseInt(line.substring(0,line.indexOf(',')));
         int b=Integer.parseInt(line.substring(line.indexOf(',')+1));
         openSpaces[0].add(a);
@@ -262,22 +298,50 @@ public class Crossing
         villagers[a][b] = new ArrayList<Villagers>();
       }
     }
+    shopWalls[0]=new Rectangle(5380,4102,517,513);
+    shopWalls[1]=new Rectangle(5547,4102,349,69);
+    shopWalls[2]=new Rectangle(5547,4253,349,69);
+    shopWalls[3]=new Rectangle(5548,4415,349,69);
     openSpaces[0]=new ArrayList<Integer>();
     openSpaces[1]=new ArrayList<Integer>();
     fishSpaces[0]=new ArrayList<Integer>();
     fishSpaces[1]=new ArrayList<Integer>();
     npcBoundaries[0]=new Rectangle(512,512,2500, 2500);
     water[0]=new Polygon(new int[5], new int[5], 5);
-    water[0].xpoints[0]=800;
-    water[0].xpoints[1]=900;
-    water[0].xpoints[2]=850;
-    water[0].xpoints[3]=750;
-    water[0].xpoints[4]=700;
-    water[0].ypoints[0]=800;
-    water[0].ypoints[1]=900;
-    water[0].ypoints[2]=1000;
-    water[0].ypoints[3]=1000;
-    water[0].ypoints[4]=900;
+    fishSpaces[0].add(10);
+    fishSpaces[1].add(681/64);
+    fishSpaces[0].add(1769/64);
+    fishSpaces[1].add(1160/64);
+    fishSpaces[0].add(2866/64);
+    fishSpaces[1].add(1460/64);
+    fishSpaces[0].add(3376/64);
+    fishSpaces[1].add(1702/64);
+    fishSpaces[0].add(3770/64);
+    fishSpaces[1].add(2602/64);
+    fishSpaces[0].add(371/64);
+    fishSpaces[1].add(2638/64);
+    fishSpaces[0].add(372/64);
+    fishSpaces[1].add(1672/64);
+    
+    fishSpaces[0].add(3810/64);
+    fishSpaces[1].add(3070/64);
+    fishSpaces[0].add(2325/64);
+    fishSpaces[1].add(3078/64);
+    fishSpaces[0].add(1195/64);
+    fishSpaces[1].add(3091/64);
+    
+    fishSpaces[0].add(1551/64);
+    fishSpaces[1].add(2353/64);
+//    water[0].xpoints[0]=800;
+//    water[0].xpoints[1]=900;
+//    water[0].xpoints[2]=850;
+//    water[0].xpoints[3]=750;
+//    water[0].xpoints[4]=700;
+//    water[0].ypoints[0]=800;
+//    water[0].ypoints[1]=900;
+//    water[0].ypoints[2]=1000;
+//    water[0].ypoints[3]=1000;
+//    water[0].ypoints[4]=900;
     worldWalls[0]=new Rectangle(0,0,10, 10);
   }
   public static void walls()
@@ -360,13 +424,13 @@ public class Crossing
           }
         }
       }
-      movement();
+      player.move();
+      if (growTimer%4==0)
+        movement();
       frame.repaint();
-      time=100-(int)((System.nanoTime()-time)*0.000001);
-      if (time<=0)
-        Thread.sleep(0);
-      else
-        Thread.sleep(100);
+      time=20-(int)((System.nanoTime()-time)*0.000001);
+      if (time>0)
+        Thread.sleep(time);
     }
   }
   
@@ -451,9 +515,9 @@ public class Crossing
       int spawnIndex=(int)(Math.random()*fishSpaces[0].size());
       int tempx=fishSpaces[0].get(spawnIndex);
       int tempy=fishSpaces[1].get(spawnIndex);
-      if (spawnIndex<4)
+      if (spawnIndex<7)
         fish[tempx][tempy].add(new Fish("salmon",tempx,tempy));
-      else if (spawnIndex<8)
+      else if (spawnIndex<10)
         fish[tempx][tempy].add(new Fish("seabass",tempx,tempy));
       else
         fish[tempx][tempy].add(new Fish("crayfish",tempx,tempy));
@@ -483,7 +547,6 @@ public class Crossing
   
   private static void movement()
   {
-    player.move();
     for (int a=0; a<76; a++)
     {
       for (int b=0; b<56; b++)

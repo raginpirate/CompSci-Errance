@@ -1,5 +1,6 @@
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.Color;
 public class Items extends Entity
 {
   public Items(String s)
@@ -8,7 +9,7 @@ public class Items extends Entity
     box.height=64;
     state=1;
     this.s=s;
-    image=Graphix.buffer(s+".jpg");
+    image=Graphix.buffer(s+".png");
     if (s=="bobber")
     {
       box.width=16;
@@ -45,7 +46,7 @@ public class Items extends Entity
   {
     if (state==0)
       g.drawImage(Graphix.star, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
-    else
+    else if (!(s.equals("bobber") && Crossing.caught!=null))
       g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, box.width, box.height, null);
   }
   public boolean interact()
