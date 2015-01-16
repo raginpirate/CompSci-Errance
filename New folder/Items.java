@@ -3,6 +3,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Color;
 public class Items extends Entity
 {
+  
   public Items(String s)
   {
     box.width=64;
@@ -42,6 +43,7 @@ public class Items extends Entity
     }
   }
   public void update(){}
+  
   public void paint(Graphics g)
   {
     if (state==0)
@@ -49,6 +51,7 @@ public class Items extends Entity
     else if (!(s.equals("bobber") && Crossing.caught!=null))
       g.drawImage(image, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, box.width, box.height, null);
   }
+  
   public boolean interact()
   {
     if (state==0)

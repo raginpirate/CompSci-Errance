@@ -9,7 +9,7 @@ public class Items extends Entity
     box.height=64;
     state=1;
     this.s=s;
-    image=Graphix.buffer(s+".jpg");
+    image=Graphix.buffer(s+".png");
     if (s=="bobber")
     {
       box.width=16;

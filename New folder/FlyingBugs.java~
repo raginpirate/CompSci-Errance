@@ -11,7 +11,6 @@ public class FlyingBugs extends Entity
   private BufferedImage ani1;
   private BufferedImage ani2;
   private BufferedImage ani3;
-  private int boundary;
   private int animation=0;
   private int counter=0;
   private int aniAdd=1;
@@ -54,7 +53,7 @@ public class FlyingBugs extends Entity
       case 1:Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
       box.x= box.x+(int)(3*Math.cos(angle));
       box.y= box.y+(int)(3*Math.sin(angle));
-      if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+      if (maxLoops==0 || !(Crossing.npcBoundaries.intersects(box)))
       {
         box.x= box.x-(int)(3*Math.cos(angle));
         box.y= box.y-(int)(3*Math.sin(angle));
@@ -105,7 +104,7 @@ public class FlyingBugs extends Entity
         Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
         box.x= box.x+(int)(30*Math.cos(angle));
         box.y= box.y+(int)(30*Math.sin(angle));
-        if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+        if (maxLoops==0 || !(Crossing.npcBoundaries.intersects(box)))
         {
           box.x= box.x-(int)(30*Math.cos(angle));
           box.y= box.y-(int)(30*Math.sin(angle));
@@ -124,7 +123,7 @@ public class FlyingBugs extends Entity
       count=count+1;
       box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
       box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-      if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+      if (maxLoops==0 || !(Crossing.npcBoundaries.intersects(box)))
       {
         box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
         box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
@@ -158,14 +157,15 @@ public class FlyingBugs extends Entity
         if (Crossing.inventory[f][k]==null)
         {
           Crossing.inventory[f][k]=this;
+          Crossing.player.caught=s;
+          Graphix.popupTimer=0;
           Crossing.grid[box.x/64][box.y/64]=null;
           break loop;
         }
         else if (f==5 && k==3)
         {
-          //Drops to the grid
-          //Crossing.grid[box.x/64][box.y/64]=null;
-          System.out.println("Inventory is full!");
+          Crossing.invFull=true;
+          Graphix.popupTimer=0;
         }
       }
     }

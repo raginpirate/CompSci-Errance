@@ -7,9 +7,6 @@ import java.awt.Rectangle;
 import java.awt.Polygon;
 public class Villagers extends Entity
 {
-  private double angle=2;
-  private int waitCount=0;
-  private int maxLoops=0;
   private BufferedImage ani1;
   private BufferedImage ani2;
   private BufferedImage ani3;
@@ -22,27 +19,33 @@ public class Villagers extends Entity
   private BufferedImage ani10;
   private BufferedImage ani11;
   private BufferedImage ani12;
+  private double angle=2;
+  private int waitCount=0;
+  private int maxLoops=0;
   private int animation=0;
   private int aniAdd=1;
+  
   public Villagers(String s, int a, int b)
   {
     eat=false;
     this.s=s;
-    image = Graphix.buffer(s + ".jpg");
-    ani1 = Graphix.buffer(s + "1.jpg");
-    ani2 = Graphix.buffer(s + "2.jpg");
-    ani3 = Graphix.buffer(s + "3.jpg");
-    ani4 = Graphix.buffer(s + "4.jpg");
-    ani5 = Graphix.buffer(s + "5.jpg");
-    ani6 = Graphix.buffer(s + "6.jpg");
-    ani7 = Graphix.buffer(s + "7.jpg");
-    ani8 = Graphix.buffer(s + "8.jpg");
-    ani9 = Graphix.buffer(s + "9.jpg");
-    ani10 = Graphix.buffer(s + "10.jpg");
-    ani11 = Graphix.buffer(s + "11.jpg");
-    ani12 = Graphix.buffer(s + "12.jpg");
+    image = Graphix.buffer(s + "down.png");
+    ani1 = Graphix.buffer(s + "down.png");
+    ani2 = Graphix.buffer(s + "down1.png");
+    ani3 = Graphix.buffer(s + "down2.png");
+    ani4 = Graphix.buffer(s + "left.png");
+    ani5 = Graphix.buffer(s + "left1.png");
+    ani6 = Graphix.buffer(s + "left2.png");
+    ani7 = Graphix.buffer(s + "right.png");
+    ani8 = Graphix.buffer(s + "right1.png");
+    ani9 = Graphix.buffer(s + "right2.png");
+    ani10 = Graphix.buffer(s + "up.png");
+    ani11 = Graphix.buffer(s + "up1.png");
+    ani12 = Graphix.buffer(s + "up2.png");
     box.x=a*64;
     box.y=b*64;
+    box.width=90;
+    box.height=90;
   }
   
   public void update()
@@ -113,50 +116,89 @@ public class Villagers extends Entity
   
   public boolean interact()
   {
-    System.out.println("The villager ignores you!");
     return true;
   }
   
   public void paint(Graphics g)
   {
     Graphics2D g2d = (Graphics2D) g;
-    AffineTransform rotate = AffineTransform.getRotateInstance(angle+Math.PI/2, image.getWidth()/2, image.getHeight()/2);
-    AffineTransformOp translate = new AffineTransformOp(rotate, AffineTransformOp.TYPE_BILINEAR);
-    if (angle<Math.PI/4 || angle>1.75*Math.PI)
+    if (s.equals("jenny"))
     {
-      if (animation==0)
-        g2d.drawImage(translate.filter(ani1, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-      else if (animation==1)
-        g2d.drawImage(translate.filter(ani2, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
+      if (angle<Math.PI/4 || angle>1.75*Math.PI)
+      {
+        if (animation==0)
+          g2d.drawImage(ani1, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani2, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani3, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
+      else if (angle<Math.PI*0.75)
+      {
+        if (animation==0)
+          g2d.drawImage(ani4, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani5, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani6, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
+      else if (angle<1.25*Math.PI)
+      {
+        if (animation==0)
+          g2d.drawImage(ani7, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani8, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani9, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
       else
-        g2d.drawImage(translate.filter(ani3, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-    }
-    else if (angle<Math.PI*0.75)
-    {
-      if (animation==0)
-        g2d.drawImage(translate.filter(ani4, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-      else if (animation==1)
-        g2d.drawImage(translate.filter(ani5, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-      else
-        g2d.drawImage(translate.filter(ani6, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-    }
-    else if (angle<1.25*Math.PI)
-    {
-      if (animation==0)
-        g2d.drawImage(translate.filter(ani7, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-      else if (animation==1)
-        g2d.drawImage(translate.filter(ani8, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-      else
-        g2d.drawImage(translate.filter(ani9, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
+      {
+        if (animation==0)
+          g2d.drawImage(ani10, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani11, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani12, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
     }
     else
     {
-      if (animation==0)
-        g2d.drawImage(translate.filter(ani10, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
-      else if (animation==1)
-        g2d.drawImage(translate.filter(ani11, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
+      if (angle<Math.PI/4 || angle>1.75*Math.PI)
+      {
+        if (animation==0)
+          g2d.drawImage(ani7, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani8, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani9, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
+      else if (angle<Math.PI*0.75)
+      {
+        if (animation==0)
+          g2d.drawImage(ani1, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani2, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani3, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
+      else if (angle<1.25*Math.PI)
+      {
+        if (animation==0)
+          g2d.drawImage(ani4, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani5, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani6, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
       else
-        g2d.drawImage(translate.filter(ani12, null), box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, null);
+      {
+        if (animation==0)
+          g2d.drawImage(ani10, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else if (animation==1)
+          g2d.drawImage(ani11, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+        else
+          g2d.drawImage(ani12, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 90, 90, null);
+      }
     }
   }
 }

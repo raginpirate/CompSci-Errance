@@ -3,16 +3,13 @@ import java.awt.Graphics;
 //It simply contains the required fields and methods that any entity needs to be in entityGrid
 public class Hole extends Entity
 {
-  public void update()
+  public void update(){}
+  public boolean interact()
   {
-    
+    return false;
   }
   public void paint(Graphics g)
   {
     g.drawImage(Graphix.hole, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
-  }
-  public boolean interact()
-  {
-    return false;
   }
 }

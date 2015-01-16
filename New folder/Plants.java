@@ -2,14 +2,14 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 public class Plants extends Entity
 {
-  private boolean lootable=false;
-  private int growCount=0;
   private BufferedImage stage1;
   private BufferedImage stage2;
   private BufferedImage stage3;
   private BufferedImage stage1w;
   private BufferedImage stage2w;
   private BufferedImage stage3w;
+  private boolean lootable=false;
+  private int growCount=0;
   
   public Plants(String s)
   {
@@ -34,24 +34,24 @@ public class Plants extends Entity
     {
       moneta=moneta/4;
       eat=false;
-      image = Graphix.buffer(s + ".jpg");
-      stage1 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1.jpg");
-      stage2 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "2.jpg");
-      stage3 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "3.jpg");
-      stage1w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1w.jpg");
-      stage2w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "2w.jpg");
-      stage3w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "3w.jpg");
+      image = Graphix.buffer(s + ".png");
+      stage1 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1.png");
+      stage2 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "2.png");
+      stage3 = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "3.png");
+      stage1w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "1w.png");
+      stage2w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "2w.png");
+      stage3w = Graphix.buffer(s.substring(0, s.indexOf(" ")) + "3w.png");
     }
     else
     {
       eat=true;
-      image = Graphix.buffer(s + ".jpg");
-      stage1 = Graphix.buffer(s + "1.jpg");
-      stage2 = Graphix.buffer(s + "2.jpg");
-      stage3 = Graphix.buffer(s + "3.jpg");
-      stage1w = Graphix.buffer(s + "1w.jpg");
-      stage2w = Graphix.buffer(s + "2w.jpg");
-      stage3w = Graphix.buffer(s + "3w.jpg");
+      image = Graphix.buffer(s + ".png");
+      stage1 = Graphix.buffer(s + "1.png");
+      stage2 = Graphix.buffer(s + "2.png");
+      stage3 = Graphix.buffer(s + "3.png");
+      stage1w = Graphix.buffer(s + "1w.png");
+      stage2w = Graphix.buffer(s + "2w.png");
+      stage3w = Graphix.buffer(s + "3w.png");
     }
     growCount=(int)(Math.random()*2+1);
   }
@@ -69,7 +69,7 @@ public class Plants extends Entity
         else if (s.contains("seeds"))
         {
           s=s.substring(0, s.indexOf(' '));
-          image = Graphix.buffer(s + ".jpg");
+          image = Graphix.buffer(s + ".png");
           moneta=moneta*4;
         }
       }
@@ -159,9 +159,7 @@ public class Plants extends Entity
       if (water<30)
         g.drawImage(stage1w, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
       else
-      {
         g.drawImage(stage1, box.x-Crossing.player.box.x+Crossing.PLAYERLOCATION, box.y-Crossing.player.box.y+Crossing.PLAYERLOCATION, 64, 64, null);
-      }
     }
     else if (state==3)
     {

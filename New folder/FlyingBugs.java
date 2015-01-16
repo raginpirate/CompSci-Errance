@@ -6,12 +6,11 @@ import java.awt.image.BufferedImage;
 import java.awt.Polygon;
 public class FlyingBugs extends Entity
 {
-  private double angle=2;
-  private int maxLoops=0;
   private BufferedImage ani1;
   private BufferedImage ani2;
   private BufferedImage ani3;
-  private int boundary;
+  private double angle=2;
+  private int maxLoops=0;
   private int animation=0;
   private int counter=0;
   private int aniAdd=1;
@@ -23,10 +22,10 @@ public class FlyingBugs extends Entity
   {
     eat=false;
     this.s=s;
-    image = Graphix.buffer(s + ".jpg");
-    ani1 = Graphix.buffer(s + "1.jpg");
-    ani2 = Graphix.buffer(s + "2.jpg");
-    ani3 = Graphix.buffer(s + "3.jpg");
+    image = Graphix.buffer(s + ".png");
+    ani1 = Graphix.buffer(s + "1.png");
+    ani2 = Graphix.buffer(s + "2.png");
+    ani3 = Graphix.buffer(s + "3.png");
     box.x=a*64;
     box.y=b*64;
     state=2;
@@ -54,7 +53,7 @@ public class FlyingBugs extends Entity
       case 1:Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
       box.x= box.x+(int)(3*Math.cos(angle));
       box.y= box.y+(int)(3*Math.sin(angle));
-      if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+      if (maxLoops==0 || !(Crossing.npcBoundaries.intersects(box)))
       {
         box.x= box.x-(int)(3*Math.cos(angle));
         box.y= box.y-(int)(3*Math.sin(angle));
@@ -105,7 +104,7 @@ public class FlyingBugs extends Entity
         Crossing.flyingBugs[box.x/64][box.y/64].remove(this);
         box.x= box.x+(int)(30*Math.cos(angle));
         box.y= box.y+(int)(30*Math.sin(angle));
-        if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+        if (maxLoops==0 || !(Crossing.npcBoundaries.intersects(box)))
         {
           box.x= box.x-(int)(30*Math.cos(angle));
           box.y= box.y-(int)(30*Math.sin(angle));
@@ -124,7 +123,7 @@ public class FlyingBugs extends Entity
       count=count+1;
       box.y= box.y+(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
       box.x= box.x+(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));
-      if (maxLoops==0 || !(Crossing.npcBoundaries[boundary].intersects(box)))
+      if (maxLoops==0 || !(Crossing.npcBoundaries.intersects(box)))
       {
         box.y= box.y-(int)(5*Math.cos(angle)-5*Math.sin(count)*Math.sin(angle));
         box.x= box.x-(int)(5*Math.sin(angle)+5*Math.sin(count)*Math.cos(angle));

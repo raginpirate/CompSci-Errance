@@ -5,31 +5,36 @@ import java.awt.Polygon;
 import java.awt.Color;
 public class Player
 {
+  String caught;
   Rectangle box = new Rectangle(900,1000,64,64);
   boolean[][] selling= new boolean[6][3];
+  boolean held;
+  boolean fishing=false;
+  boolean insFunds;
   int bought;
   int sold;
-  boolean insFunds;
-  String caught;
   int menu=0;
   int selected1x=0;
   int selected1y=0;
   int selected2;
   int moneta=1000;
-  boolean fishing=false;
+  int lastDirection=0;
+  int dig=0;
+  int can=0;
+  int net=0;
+  int rod=0;
+  int heldx;
+  int heldy;
+  int animation=0;
   private boolean up;
   private boolean down;
   private boolean left;
   private boolean right;
-  int lastDirection=0; // 0 up 1 down 2 left 3 right
+  private boolean sprint;
   private int buryx;
   private int buryy;
-  boolean sprint;
-  boolean held;
-  int heldx;
-  int heldy;
-  int animation=0;
-  int animationCount=0;
+  private int animationCount=0;
+  
   public void move()
   {
     if (up)
@@ -121,8 +126,8 @@ public class Player
   {
     if (sprint)
     {
-      k=k*2;
-      l=l*2;
+      k=k*3;
+      l=l*3;
     }
     box.x=box.x+k;
     if (!(worldCollision(box, true)))
@@ -358,6 +363,8 @@ public class Player
       {
         switch (menu)
         {
+          case 9:menu=6; 
+          break;
           case 0:Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
           if (lastDirection==0)
             temp.y=temp.y-64;
@@ -523,199 +530,203 @@ public class Player
         }
         throw new Exception();
       }
-      if (fishing)
+      if (Crossing.player.dig==0 && Crossing.player.net==0 && Crossing.player.can==0 && Crossing.player.rod==0)
       {
-        fishing=false;
-        Crossing.bobber.box.x=0;
-        Crossing.bobber.box.y=0;
-        if(Crossing.caught!= null)
+        if (fishing)
         {
-          for (int f=0; f<6; f++)
+          fishing=false;
+          rod=0;
+          Crossing.bobber.box.x=0;
+          Crossing.bobber.box.y=0;
+          if(Crossing.caught!= null)
           {
-            for (int s=1; s<4; s++)
+            for (int f=0; f<6; f++)
             {
-              if (Crossing.inventory[f][s]==null)
+              for (int s=1; s<4; s++)
               {
-                Crossing.inventory[f][s]=Crossing.caught;
-                caught=Crossing.caught.s;
-                Graphix.popupTimer=0;
-                Crossing.fish[Crossing.caught.box.x/64][Crossing.caught.box.y/64].remove(Crossing.caught);
-                Crossing.caught=null;
-                Crossing.spawn(3);
-                throw new Exception();
-              }
-              else if (f==5 && s==3)
-              {
-                Crossing.invFull=true;
-                Graphix.popupTimer=0;
+                if (Crossing.inventory[f][s]==null)
+                {
+                  Crossing.inventory[f][s]=Crossing.caught;
+                  caught=Crossing.caught.s;
+                  Graphix.popupTimer=0;
+                  Crossing.fish[Crossing.caught.box.x/64][Crossing.caught.box.y/64].remove(Crossing.caught);
+                  Crossing.caught=null;
+                  Crossing.spawn(3);
+                  throw new Exception();
+                }
+                else if (f==5 && s==3)
+                {
+                  Crossing.invFull=true;
+                  Graphix.popupTimer=0;
+                }
               }
             }
           }
+          throw new Exception();
         }
-        throw new Exception();
-      }
-      switch(menu)
-      {
-        //When we are not using the inventory (case 0)
-        case 0:
-          Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
-          if (lastDirection==0)
-            temp.y=temp.y-64;
-          else if (lastDirection==1)
-            temp.y=temp.y+64;
-          else if (lastDirection==2)
-            temp.x=temp.x-64;
-          else if (lastDirection==3)
-            temp.x=temp.x+64;
-          if (temp.intersects(Crossing.sign))
-          {
-            right=false;
-            left=false;
-            up=false;
-            down=false;
-            menu=12;
-          }
-          if (box.x%64<32)
+        switch(menu)
         {
-          if (box.y%64<32)
-          {
-            attemptPickup(box.x/64, box.y/64);
-            attemptPickup(box.x/64+1, box.y/64);
-            attemptPickup(box.x/64, box.y/64+1);
-            attemptPickup(box.x/64+1,box.y/64+1);
-            checkEquipment(box.x/64, box.y/64);
-          }
-          attemptPickup(box.x/64, box.y/64+1);
-          attemptPickup(box.x/64, box.y/64);
-          attemptPickup(box.x/64+1, box.y/64+1);
-          attemptPickup(box.x/64+1,box.y/64);
-          checkEquipment(box.x/64, box.y/64+1);
-        }
-          if (box.y%64<32)
-          {
-            attemptPickup(box.x/64+1, box.y/64);
-            attemptPickup(box.x/64, box.y/64);
-            attemptPickup(box.x/64+1, box.y/64+1);
-            attemptPickup(box.x/64,box.y/64+1);
-            checkEquipment(box.x/64+1, box.y/64);
-          }
-          attemptPickup(box.x/64+1, box.y/64+1);
-          attemptPickup(box.x/64, box.y/64+1);
-          attemptPickup(box.x/64+1, box.y/64);
-          attemptPickup(box.x/64,box.y/64);
-          checkEquipment(box.x/64+1, box.y/64+1);
-          
-          //When we are using the inventory (case 1-5)
-        case 1:
-          if (held)
-        {
-          Entity temps = Crossing.inventory[selected1x][selected1y];
-          Crossing.inventory[selected1x][selected1y] = Crossing.inventory[heldx][heldy];
-          Crossing.inventory[heldx][heldy] = temps;
-          held = false;
-          break;
-        }
-          if (Crossing.inventory[selected1x][selected1y] != null)
-          {
-            if (buryx!=0)
+          //When we are not using the inventory (case 0)
+          case 0:
+            Rectangle temp = new Rectangle(box.x, box.y, 64, 64);
+            if (lastDirection==0)
+              temp.y=temp.y-64;
+            else if (lastDirection==1)
+              temp.y=temp.y+64;
+            else if (lastDirection==2)
+              temp.x=temp.x-64;
+            else if (lastDirection==3)
+              temp.x=temp.x+64;
+            if (temp.intersects(Crossing.sign))
             {
+              right=false;
+              left=false;
+              up=false;
+              down=false;
+              menu=12;
+            }
+            if (box.x%64<32)
+            {
+              if (box.y%64<32)
+              {
+                attemptPickup(box.x/64, box.y/64);
+                attemptPickup(box.x/64+1, box.y/64);
+                attemptPickup(box.x/64, box.y/64+1);
+                attemptPickup(box.x/64+1,box.y/64+1);
+                checkEquipment(box.x/64, box.y/64);
+              }
+              attemptPickup(box.x/64, box.y/64+1);
+              attemptPickup(box.x/64, box.y/64);
+              attemptPickup(box.x/64+1, box.y/64+1);
+              attemptPickup(box.x/64+1,box.y/64);
+              checkEquipment(box.x/64, box.y/64+1);
+            }
+            if (box.y%64<32)
+            {
+              attemptPickup(box.x/64+1, box.y/64);
+              attemptPickup(box.x/64, box.y/64);
+              attemptPickup(box.x/64+1, box.y/64+1);
+              attemptPickup(box.x/64,box.y/64+1);
+              checkEquipment(box.x/64+1, box.y/64);
+            }
+            attemptPickup(box.x/64+1, box.y/64+1);
+            attemptPickup(box.x/64, box.y/64+1);
+            attemptPickup(box.x/64+1, box.y/64);
+            attemptPickup(box.x/64,box.y/64);
+            checkEquipment(box.x/64+1, box.y/64+1);
+            
+            //When we are using the inventory (case 1-5)
+          case 1:
+            if (held)
+          {
+            Entity temps = Crossing.inventory[selected1x][selected1y];
+            Crossing.inventory[selected1x][selected1y] = Crossing.inventory[heldx][heldy];
+            Crossing.inventory[heldx][heldy] = temps;
+            held = false;
+            break;
+          }
+            if (Crossing.inventory[selected1x][selected1y] != null)
+            {
+              if (buryx!=0)
+              {
+                if (Crossing.inventory[selected1x][selected1y].eat)
+                {
+                  menu=5;
+                  break;
+                }
+                else
+                {
+                  menu=4;
+                  break;
+                }
+              }
               if (Crossing.inventory[selected1x][selected1y].eat)
               {
-                menu=5;
+                menu=3;
                 break;
               }
-              else
-              {
-                menu=4;
-                break;
-              }
+              menu=2;
             }
-            if (Crossing.inventory[selected1x][selected1y].eat)
-            {
-              menu=3;
-              break;
-            }
-            menu=2;
+            break;
+            
+          case 2: switch (selected2)
+          {
+            case 0:drop();
+            break;
+            
+            case 1:hold();
+            break;
+            
+            case 2: menu=1;
+            selected2=0;
+            break;
           }
           break;
           
-        case 2: switch (selected2)
-        {
-          case 0:drop();
+          case 3: switch (selected2)
+          {
+            case 0:eat();
+            break;
+            
+            case 1:drop();
+            break;
+            
+            case 2:hold();
+            break;
+            
+            case 3: menu=1;
+            selected2=0;
+            break;
+          }
           break;
           
-          case 1:hold();
+          case 4: switch (selected2)
+          {
+            case 0:burry();
+            break;
+            
+            case 1:drop();
+            break;
+            
+            case 2:hold();
+            break;
+            
+            case 3: menu=1;
+            selected2=0;
+            break;
+          }
           break;
           
-          case 2: menu=1;
-          selected2=0;
+          case 5: switch (selected2)
+          {
+            case 0:eat();
+            break;
+            
+            case 1:burry();
+            break;
+            
+            case 2:drop();
+            break;
+            
+            case 3:hold();
+            break;
+            
+            case 4: menu=1;
+            selected2=0;
+            break;
+          }
+          break;
+          case 11:if (selected2==0)
+            Crossing.quit=false;
+          else
+          {
+            menu=0;
+            selected2=0;
+          }
+          break;
+          case 12:menu=0; 
           break;
         }
-        break;
-        
-        case 3: switch (selected2)
-        {
-          case 0:eat();
-          break;
-          
-          case 1:drop();
-          break;
-          
-          case 2:hold();
-          break;
-          
-          case 3: menu=1;
-          selected2=0;
-          break;
-        }
-        break;
-        
-        case 4: switch (selected2)
-        {
-          case 0:burry();
-          break;
-          
-          case 1:drop();
-          break;
-          
-          case 2:hold();
-          break;
-          
-          case 3: menu=1;
-          selected2=0;
-          break;
-        }
-        break;
-        
-        case 5: switch (selected2)
-        {
-          case 0:eat();
-          break;
-          
-          case 1:burry();
-          break;
-          
-          case 2:drop();
-          break;
-          
-          case 3:hold();
-          break;
-          
-          case 4: menu=1;
-          selected2=0;
-          break;
-        }
-        break;
-        case 11:if (selected2==0)
-          Crossing.quit=false;
-        else
-        {
-          menu=0;
-          selected2=0;
-        }
-        break;
-        case 12:menu=0; 
-        break;
       }
     }
     catch (Exception e) {}
@@ -732,6 +743,7 @@ public class Player
   
   private void useShovel(int k, int l, boolean y) throws Exception
   {
+    dig=100;
     if (Crossing.grid[k][l] instanceof Hole)
     {
       Crossing.grid[k][l]=null;
@@ -839,6 +851,7 @@ public class Player
     }
     if (Crossing.inventory[0][0].equipment==2)
     {
+      net=100;
       Rectangle temp = new Rectangle(box.x+x*64, box.y+y*64, 64, 64);
       for (int a=-1; a<2; a++)
       {
@@ -904,6 +917,7 @@ public class Player
     }//catch bug
     if (Crossing.inventory[0][0].equipment==3)
     {
+      rod=100;
       if (x==0)
       {
         Crossing.bobber.box.x=box.x+24;
@@ -938,6 +952,7 @@ public class Player
     }//catch fish
     if (Crossing.inventory[0][0].equipment==4)
     {
+      can=100;
       useWater(x, y);
     }//water
     if (Crossing.inventory[0][0].equipment==5)

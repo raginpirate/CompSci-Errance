@@ -7,38 +7,38 @@ import java.awt.Rectangle;
 import java.awt.Polygon;
 public class Fish extends Entity
 {
-  private boolean nibbleAI;
-  private double angle=2;
-  private double rotation=2;
-  private short waitCount=0;
-  private short accelleration=0;
-  private int animation=0;
-  private int aniAdd=1;
   private BufferedImage ani1;
   private BufferedImage ani2;
   private BufferedImage ani3;
   private BufferedImage ani4;
   private BufferedImage ani5;
-  private int boundary;
-  private int biteTimer=-1;
-  private boolean collided=false;
   private Rectangle bobberRectangle=new Rectangle(10000,10000,0,0);
+  private double angle=2;
+  private double rotation=2;
+  private int waitCount=0;
+  private int accelleration=0;
+  private int animation=0;
+  private int aniAdd=1;
+  private int biteTimer=-1;
+  private int didntBite=0;
+  private boolean collided=false;
+  private boolean nibbleAI;
   
   public Fish(String s, int a, int b)
   {
     eat=false;
     this.s=s;
-    image = Graphix.buffer(s + ".jpg");
-    ani1 = Graphix.buffer("fish1.jpg");
-    ani2 = Graphix.buffer("fish2.jpg");
-    ani3 = Graphix.buffer("fish3.jpg");
-    ani4 = Graphix.buffer("fish4.jpg");
-    ani5 = Graphix.buffer("fish5.jpg");
+    image = Graphix.buffer(s + ".png");
+    ani1 = Graphix.buffer("fish1.png");
+    ani2 = Graphix.buffer("fish2.png");
+    ani3 = Graphix.buffer("fish3.png");
+    ani4 = Graphix.buffer("fish4.png");
+    ani5 = Graphix.buffer("fish5.png");
     if (s.equals("salmon"))
       moneta=100;
     if (s.equals("seabass"))
       moneta=100;
-    if (s.equals("crayfish"))
+    if (s.equals("crawdaddy"))
       moneta=500;
     box.x=64*a;
     box.y=64*b;
@@ -57,6 +57,7 @@ public class Fish extends Entity
       Crossing.fish[box.x/64][box.y/64].remove(this);
       if (biteTimer==-1)
       {
+        didntBite=0;
         box.x= box.x+(int)(accelleration*Math.cos(angle));
         box.y= box.y+(int)(accelleration*Math.sin(angle));
         if(accelleration>0)
@@ -75,11 +76,16 @@ public class Fish extends Entity
           }
         }
         else if (collision() || accelleration==0)
+        {
           accelleration=15;
+          didntBite++;
+        }
+        else
+          didntBite++;
       }
       else
         biteTimer--;
-      if (Crossing.bobber.box.x!=0 && biteTimer!=0)
+      if (Crossing.bobber.box.x!=0 && biteTimer!=0 && didntBite<15)
         Crossing.fish[box.x/64][box.y/64].add(this);
       else
       {
